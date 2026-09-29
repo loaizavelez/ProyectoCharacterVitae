@@ -1,5 +1,6 @@
-import Button from '../../components/Button';
-import TestimonialCard from '../../components/TestimonialCard';
+import Button from '../../Components/Button/Button';
+import TestimonialCard from '../../Components/TestimonialCard/TestimonialCard';
+import { Link } from 'react-router-dom';
 
 export default function Landing() {
   return (
@@ -7,9 +8,12 @@ export default function Landing() {
       
       {/* 1. Navegación Superior */}
       <header className="w-full p-4 flex justify-end">
-        <button className="px-5 py-2 text-sm font-semibold text-zinc-200 border-2 border-zinc-700 rounded-xl hover:bg-zinc-800 transition-colors cursor-pointer">
-          Entrar
-        </button>
+        <Link 
+            to="/login" 
+            className="px-5 py-2 text-sm font-semibold text-zinc-200 border-2 border-zinc-700 rounded-xl hover:bg-zinc-800 transition-colors cursor-pointer"
+        >
+            Entrar
+        </Link>
       </header>
 
       {/* 2. Hero Section */}
@@ -26,9 +30,11 @@ export default function Landing() {
         </div>
 
         <div className="w-full max-w-xs mb-16">
-          <Button type="button">
-            Crea tu cuenta
-          </Button>
+          <Link to="/registro" className="block w-full">
+            <Button type="button">
+              Crea tu cuenta
+            </Button>
+          </Link>
         </div>
 
         {/* 3. Valoraciones */}
