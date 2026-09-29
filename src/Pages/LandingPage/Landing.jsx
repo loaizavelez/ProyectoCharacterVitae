@@ -23,7 +23,7 @@ export default function Landing() {
           Character Vitae
         </h1>
         
-        <div className="flex flex-col gap-2 text-zinc-400 text-lg font-medium mb-10">
+        <div className="flex flex-col gap-2 text-zinc-400 text-lg font-medium mb-10 w-fit mx-auto text-left">
           <p>Sube tus proyectos.</p>
           <p>Comparte tus logros.</p>
           <p>Sé tu personaje.</p>
