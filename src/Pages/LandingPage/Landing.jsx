@@ -9,30 +9,42 @@ export default function Landing() {
   const containerRef = useRef(null);
 
   // Simulamos los portafolios con posiciones absolutas repartidas en la pantalla
- const portfolios = [
-    { id: 1, text: "He conocido proyectos maravillosos.", pos: "top-[12%] left-[2%] md:left-[8%]" },
-    { id: 2, text: "Mis proyectos tienen mayor visibilidad.", pos: "top-[22%] right-[2%] md:right-[8%]" },
-    { id: 3, text: "Por fin puedo ser mi OC.", pos: "top-[48%] left-[5%] md:left-[15%]" },
-    { id: 4, text: "El mejor lugar para mostrar mis renders y modelos 3D.", pos: "bottom-[28%] right-[4%] md:right-[12%]" },
-    { id: 5, text: "Ideal para documentar mis scripts y mecánicas de físicas.", pos: "bottom-[10%] left-[8%] md:left-[22%]" }
+const portfolios = [
+    { id: 1, text: "He conocido proyectos maravillosos.", pos: "top-[5%] -left-[350px]" },
+    { id: 2, text: "Mis proyectos tienen mayor visibilidad.", pos: "top-[25%] -left-[350px]" },
+    { id: 3, text: "Por fin puedo ser mi OC.", pos: "top-[45%] -left-[350px]" },
+    { id: 4, text: "El mejor lugar para mostrar mis renders y modelos 3D.", pos: "top-[65%] -left-[350px]" },
+    { id: 5, text: "Ideal para documentar mis scripts y mecánicas de físicas.", pos: "top-[82%] -left-[350px]" }
   ];
 
   useGSAP(() => {
     const cards = gsap.utils.toArray('.portfolio-card');
     
+    // Repartimos los tiempos de inicio (0 a 35 seg) en desorden. 
+    // Así evitamos que formen una línea diagonal perfecta, dándoles un aspecto orgánico.
+    const startDelays = [-7, -21, -35, -14, -28]; 
+
     cards.forEach((card, index) => {
-      // Movimiento más sutil para evitar que invadan el espacio del vecino
+      // 1. Animación Horizontal: Cruzan la pantalla lentamente y sin chocar
       gsap.to(card, {
-        x: '+=20', // Reducido el flujo horizontal
-        y: index % 2 === 0 ? '-=15' : '+=15', // Reducido el flujo vertical
-        duration: 4 + (index * 0.5), 
+        x: '150vw', // Viaja hasta salir de la pantalla por la derecha
+        duration: 35, // ⬅️ Mucho más lento (35 segundos en cruzar)
+        repeat: -1, // Vuelve a aparecer por la izquierda infinitamente
+        ease: "none", // Velocidad estrictamente constante
+        delay: startDelays[index] // Asigna su posición inicial a lo ancho de la pantalla
+      });
+
+      // 2. Animación Vertical: Flote suave constante
+      gsap.to(card, {
+        y: index % 2 === 0 ? '-=20' : '+=20', 
+        duration: 2.5 + (index * 0.2), 
         repeat: -1,
-        yoyo: true,
+        yoyo: true, 
         ease: "sine.inOut"
       });
     });
   }, { scope: containerRef });
-
+  
   return (
     <div ref={containerRef} className="relative min-h-screen bg-zinc-950 overflow-hidden font-sans flex flex-col justify-between">
       
