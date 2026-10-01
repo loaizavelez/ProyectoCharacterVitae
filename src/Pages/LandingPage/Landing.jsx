@@ -15,25 +15,25 @@ export default function Landing() {
     { id: 4, text: "El mejor lugar para mostrar mis renders y modelos 3D.", pos: "top-[65%]" },
     { id: 5, text: "Ideal para documentar mis scripts y mecánicas de físicas.", pos: "bottom-[5%]" }
   ];
+  const travelDuration = 40;
 
   useGSAP(() => {
     const cards = gsap.utils.toArray('.portfolio-card');
     
     cards.forEach((card, index) => {
-      // Ñemýi horizontal: Oho peteĩ hendápe añoite, ndojeyvéi
       gsap.fromTo(card, 
-        { x: -500 }, 
+        { x: () => -card.offsetWidth },
         { 
-          x: '120vw', 
-          duration: 40, // Oho mbeguekatu
+          x: () => containerRef.current.clientWidth + card.offsetWidth,
+          duration: travelDuration,
           ease: "none", 
           repeat: -1,
-          yoyo: false, // Jasegura ani hag̃ua opopo
-          delay: index * -8 
+          repeatRefresh: true,
+          yoyo: false,
+          delay: index * -(travelDuration / portfolios.length)
         }
       );
 
-      // Ñemýi vertical: Opopo yvate ha yvy gotyo añoite
       gsap.to(card, {
         y: index % 2 === 0 ? '-=25' : '+=25', 
         duration: 3, 
@@ -67,9 +67,11 @@ export default function Landing() {
           <Link 
             key={item.id} 
             to={`/portafolio/${item.id}`} 
-            className={`absolute left-0 ${item.pos} portfolio-card block w-[260px] md:w-[320px] hover:scale-105 hover:z-40 transition-transform duration-300 shadow-xl`}
+            className={`absolute left-0 ${item.pos} portfolio-card group block w-[260px] md:w-[320px] hover:z-40 shadow-xl`}
           >
-            <TestimonialCard text={item.text} />
+            <div className="transition-transform duration-300 group-hover:scale-105">
+              <TestimonialCard text={item.text} />
+            </div>
           </Link>
         ))}
       </div>
