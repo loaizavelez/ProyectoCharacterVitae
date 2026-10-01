@@ -12,11 +12,11 @@ export default function Landing() {
   const actionRef = useRef(null);
 
   const portfolios = [
-    { id: 1, text: "He conocido proyectos maravillosos.", pos: "top-[5%]" },
-    { id: 2, text: "Mis proyectos tienen mayor visibilidad.", pos: "top-[25%]" },
-    { id: 3, text: "Por fin puedo ser mi OC.", pos: "top-[45%]" },
-    { id: 4, text: "El mejor lugar para mostrar mis renders y modelos 3D.", pos: "top-[65%]" },
-    { id: 5, text: "Ideal para documentar mis scripts y mecánicas de físicas.", pos: "bottom-[5%]" }
+    { id: 1, text: "He conocido proyectos maravillosos." },
+    { id: 2, text: "Mis proyectos tienen mayor visibilidad." },
+    { id: 3, text: "Por fin puedo ser mi OC." },
+    { id: 4, text: "El mejor lugar para mostrar mis renders y modelos 3D." },
+    { id: 5, text: "Ideal para documentar mis scripts y mecánicas de físicas." }
   ];
   const travelDuration = 40;
   const verticalDuration = 20;
@@ -30,16 +30,12 @@ export default function Landing() {
         const titleBottom = titleRef.current.getBoundingClientRect().bottom;
         const actionTop = actionRef.current.getBoundingClientRect().top;
         const areaRect = cardsAreaRef.current.getBoundingClientRect();
-        const baseTop = areaRect.top + card.offsetTop;
-        const minTop = Math.max(areaRect.top, titleBottom + 16);
-        const maxTop = Math.max(
-          minTop,
-          Math.min(areaRect.bottom, actionTop) - cardHeight - 16
-        );
+        const minTop = Math.max(0, titleBottom + 16 - areaRect.top);
+        const maxTop = Math.max(minTop, Math.min(areaRect.bottom, actionTop) - areaRect.top - cardHeight - 16);
 
         return {
-          min: minTop - baseTop,
-          max: maxTop - baseTop
+          min: minTop,
+          max: maxTop
         };
       };
 
@@ -92,7 +88,7 @@ export default function Landing() {
           <Link 
             key={item.id} 
             to={`/portafolio/${item.id}`} 
-            className={`absolute left-0 ${item.pos} portfolio-card group block w-[260px] md:w-[320px] hover:z-40 shadow-xl`}
+            className="absolute left-0 top-0 portfolio-card group block w-[260px] md:w-[320px] hover:z-40 shadow-xl"
           >
             <div className="transition-transform duration-300 group-hover:scale-105">
               <TestimonialCard text={item.text} />
