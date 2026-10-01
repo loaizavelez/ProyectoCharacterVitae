@@ -19,7 +19,7 @@ export default function Landing() {
     { id: 5, text: "Ideal para documentar mis scripts y mecánicas de físicas.", pos: "bottom-[5%]" }
   ];
   const travelDuration = 40;
-  const verticalDuration = 8;
+  const verticalDuration = 20;
 
   useGSAP(() => {
     const cards = gsap.utils.toArray('.portfolio-card');
