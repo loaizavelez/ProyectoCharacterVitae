@@ -7,6 +7,9 @@ import TestimonialCard from '../../Components/TestimonialCard/TestimonialCard';
 
 export default function Landing() {
   const containerRef = useRef(null);
+  const titleRef = useRef(null);
+  const cardsAreaRef = useRef(null);
+  const actionRef = useRef(null);
 
   const portfolios = [
     { id: 1, text: "He conocido proyectos maravillosos.", pos: "top-[5%]" },
@@ -16,11 +19,30 @@ export default function Landing() {
     { id: 5, text: "Ideal para documentar mis scripts y mecánicas de físicas.", pos: "bottom-[5%]" }
   ];
   const travelDuration = 40;
+  const verticalDuration = 8;
 
   useGSAP(() => {
     const cards = gsap.utils.toArray('.portfolio-card');
     
     cards.forEach((card, index) => {
+      const getVerticalBounds = () => {
+        const cardHeight = card.offsetHeight;
+        const titleBottom = titleRef.current.getBoundingClientRect().bottom;
+        const actionTop = actionRef.current.getBoundingClientRect().top;
+        const areaRect = cardsAreaRef.current.getBoundingClientRect();
+        const baseTop = areaRect.top + card.offsetTop;
+        const minTop = Math.max(areaRect.top, titleBottom + 16);
+        const maxTop = Math.max(
+          minTop,
+          Math.min(areaRect.bottom, actionTop) - cardHeight - 16
+        );
+
+        return {
+          min: minTop - baseTop,
+          max: maxTop - baseTop
+        };
+      };
+
       gsap.fromTo(card, 
         { x: () => -card.offsetWidth },
         { 
@@ -34,11 +56,14 @@ export default function Landing() {
         }
       );
 
-      gsap.to(card, {
-        y: index % 2 === 0 ? '-=25' : '+=25', 
-        duration: 3, 
+      gsap.fromTo(card, {
+        y: () => getVerticalBounds().min
+      }, {
+        y: () => getVerticalBounds().max,
+        duration: verticalDuration,
         repeat: -1,
-        yoyo: true, 
+        yoyo: true,
+        delay: index * -(verticalDuration * 2 / portfolios.length),
         ease: "sine.inOut"
       });
     });
@@ -56,13 +81,13 @@ export default function Landing() {
         </Link>
       </header>
 
-      <div className="absolute top-12 w-full text-center z-20 pointer-events-none">
+      <div ref={titleRef} className="absolute top-12 w-full text-center z-20 pointer-events-none">
          <h1 className="text-4xl md:text-5xl font-extrabold text-white tracking-tight drop-shadow-2xl">
           Character Vitae
         </h1>
       </div>
 
-      <div className="flex-1 w-full relative z-10 mt-20">
+      <div ref={cardsAreaRef} className="flex-1 w-full relative z-10 mt-36">
         {portfolios.map((item) => (
           <Link 
             key={item.id} 
@@ -76,7 +101,7 @@ export default function Landing() {
         ))}
       </div>
 
-      <div className="relative z-30 w-full flex justify-center pb-12 px-6 pointer-events-none">
+      <div ref={actionRef} className="relative z-30 w-full flex justify-center pb-12 px-6 pointer-events-none">
         <div className="w-full max-w-xs pointer-events-auto">
           <Link to="/registro" className="block w-full">
             <Button type="button">
