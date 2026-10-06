@@ -1,56 +1,111 @@
+import { useRef } from 'react';
+import { Link } from 'react-router-dom';
+import gsap from 'gsap';
+import { useGSAP } from '@gsap/react';
 import Button from '../../Components/Button/Button';
 import TestimonialCard from '../../Components/TestimonialCard/TestimonialCard';
-import { Link } from 'react-router-dom';
 
 export default function Landing() {
+  const containerRef = useRef(null);
+  const titleRef = useRef(null);
+  const cardsAreaRef = useRef(null);
+  const actionRef = useRef(null);
+
+  const portfolios = [
+    { id: 1, text: "He conocido proyectos maravillosos." },
+    { id: 2, text: "Mis proyectos tienen mayor visibilidad." },
+    { id: 3, text: "Por fin puedo ser mi OC." },
+    { id: 4, text: "El mejor lugar para mostrar mis renders y modelos 3D." },
+    { id: 5, text: "Ideal para documentar mis scripts y mecánicas de físicas." }
+  ];
+  const travelDuration = 40;
+  const verticalDuration = 20;
+
+  useGSAP(() => {
+    const cards = gsap.utils.toArray('.portfolio-card');
+    
+    cards.forEach((card, index) => {
+      const getVerticalBounds = () => {
+        const cardHeight = card.offsetHeight;
+        const titleBottom = titleRef.current.getBoundingClientRect().bottom;
+        const actionTop = actionRef.current.getBoundingClientRect().top;
+        const areaRect = cardsAreaRef.current.getBoundingClientRect();
+        const minTop = Math.max(0, titleBottom + 16 - areaRect.top);
+        const maxTop = Math.max(minTop, Math.min(areaRect.bottom, actionTop) - areaRect.top - cardHeight - 16);
+
+        return {
+          min: minTop,
+          max: maxTop
+        };
+      };
+
+      gsap.fromTo(card, 
+        { x: () => -card.offsetWidth },
+        { 
+          x: () => containerRef.current.clientWidth + card.offsetWidth,
+          duration: travelDuration,
+          ease: "none", 
+          repeat: -1,
+          repeatRefresh: true,
+          yoyo: false,
+          delay: index * -(travelDuration / portfolios.length)
+        }
+      );
+
+      gsap.fromTo(card, {
+        y: () => getVerticalBounds().min
+      }, {
+        y: () => getVerticalBounds().max,
+        duration: verticalDuration,
+        repeat: -1,
+        yoyo: true,
+        delay: index * -(verticalDuration * 2 / portfolios.length),
+        ease: "sine.inOut"
+      });
+    });
+  }, { scope: containerRef });
+
   return (
-    <div className="min-h-screen bg-zinc-950 flex flex-col font-sans">
+    <div ref={containerRef} className="relative min-h-screen bg-zinc-950 overflow-hidden font-sans flex flex-col justify-between">
       
-      {/* 1. Navegación Superior */}
-      <header className="w-full p-4 flex justify-end">
+      <header className="absolute top-0 right-0 w-full p-4 flex justify-end z-30 pointer-events-none">
         <Link 
             to="/login" 
-            className="px-5 py-2 text-sm font-semibold text-zinc-200 border-2 border-zinc-700 rounded-xl hover:bg-zinc-800 transition-colors cursor-pointer"
+            className="pointer-events-auto px-5 py-2 text-sm font-semibold text-zinc-200 border-2 border-zinc-700 rounded-xl hover:bg-zinc-800 transition-colors bg-zinc-950/60 backdrop-blur-md"
         >
             Entrar
         </Link>
       </header>
 
-      {/* 2. Hero Section */}
-      <main className="flex-1 flex flex-col items-center pt-12 pb-8 px-6 text-center">
-        
-        <h1 className="text-4xl font-extrabold text-white tracking-tight mb-8">
+      <div ref={titleRef} className="absolute top-12 w-full text-center z-20 pointer-events-none">
+         <h1 className="text-4xl md:text-5xl font-extrabold text-white tracking-tight drop-shadow-2xl">
           Character Vitae
         </h1>
-        
-        <div className="flex flex-col gap-2 text-zinc-400 text-lg font-medium mb-10 w-fit mx-auto text-left">
-          <p>Sube tus proyectos.</p>
-          <p>Comparte tus logros.</p>
-          <p>Sé tu personaje.</p>
-        </div>
+      </div>
 
-        <div className="w-full max-w-xs mb-16">
+      <div ref={cardsAreaRef} className="flex-1 w-full relative z-10 mt-36">
+        {portfolios.map((item) => (
+          <Link 
+            key={item.id} 
+            to={`/portafolio/${item.id}`} 
+            className="absolute left-0 top-0 portfolio-card group block w-[260px] md:w-[320px] hover:z-40 shadow-xl"
+          >
+            <div className="transition-transform duration-300 group-hover:scale-105">
+              <TestimonialCard text={item.text} />
+            </div>
+          </Link>
+        ))}
+      </div>
+
+      <div ref={actionRef} className="relative z-30 w-full flex justify-center pb-12 px-6 pointer-events-none">
+        <div className="w-full max-w-xs pointer-events-auto">
           <Link to="/registro" className="block w-full">
             <Button type="button">
-              Crea tu cuenta
+              Comienza tu aventura
             </Button>
           </Link>
         </div>
-
-        {/* 3. Valoraciones */}
-        <section className="w-full max-w-sm text-left">
-          <h2 className="text-xl font-bold text-zinc-100 mb-6 px-2">
-            Valoraciones
-          </h2>
-          
-          <div className="flex flex-col gap-4 pb-10">
-            <TestimonialCard text="He conocido proyectos maravillosos." />
-            <TestimonialCard text="Mis proyectos tienen mayor visibilidad." />
-            <TestimonialCard text="Por fin puedo ser mi OC." />
-          </div>
-        </section>
-
-      </main>
+      </div>
 
     </div>
   );
