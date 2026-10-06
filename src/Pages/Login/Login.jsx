@@ -1,14 +1,18 @@
 import { useState } from 'react';
-
+import { useNavigate } from 'react-router-dom';
 
 export default function Login() {
-  const [email, setEmail] = useState('');
+  // Cambiamos "email" por "username"
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Aquí conectaremos la lógica de autenticación más adelante
-    console.log('Datos de acceso:', { email, password });
+    console.log('Datos de acceso:', { username, password });
+
+    // Redirigimos al canvas
+    navigate('/canvas'); 
   };
 
   return (
@@ -26,15 +30,16 @@ export default function Login() {
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-zinc-300">
-              Correo Electrónico
+            <label htmlFor="username" className="block text-sm font-medium text-zinc-300">
+              Usuario
             </label>
             <div className="mt-2">
+              {/* AQUÍ ESTÁ EL CAMBIO CLAVE: type="text" en lugar de type="email" */}
               <input
-                id="email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                id="username"
+                type="text"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
                 required
                 className="w-full px-4 py-3 bg-zinc-950 border border-zinc-700 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
                 placeholder="tu@correo.com"
