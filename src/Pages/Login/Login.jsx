@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom';
 export default function Login() {
   // Cambiamos "email" por eso "username"
   const [username, setUsername] = useState('');
-
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
 
