@@ -11,8 +11,8 @@ export default function Login() {
     e.preventDefault();
     console.log('Datos de acceso:', { username, password });
 
-    // Redirigimos al canvas
-    navigate('/canvas'); 
+    // Redirigimos al home después del login
+    navigate('/home');
   };
 
   return (
