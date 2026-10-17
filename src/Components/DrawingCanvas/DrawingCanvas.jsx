@@ -1,6 +1,8 @@
 import { useRef, useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 export default function DrawingCanvas() {
+  const navigate = useNavigate();
   const canvasRef = useRef(null);
   const contextRef = useRef(null);
   const [isDrawing, setIsDrawing] = useState(false);
@@ -81,6 +83,12 @@ export default function DrawingCanvas() {
     context.clearRect(0, 0, canvas.width, canvas.height);
   };
 
+  const useDrawingAsPortrait = () => {
+    navigate('/sheet', {
+      state: { portrait: canvasRef.current.toDataURL('image/png') }
+    });
+  };
+
   return (
     <div className="flex flex-col items-center gap-4 w-full max-w-3xl mx-auto p-4 bg-zinc-900/50 rounded-2xl border border-zinc-800 backdrop-blur-sm">
       
@@ -126,6 +134,23 @@ export default function DrawingCanvas() {
           onTouchMove={draw}          // Soporte Touch (Móviles)
           className="w-full h-auto aspect-[5/3] cursor-crosshair touch-none"
         />
+      </div>
+
+      <div className="flex justify-center gap-4 w-full">
+        <button
+          type="button"
+          onClick={() => navigate('/sheet')}
+          className="px-4 py-2 text-sm font-semibold text-zinc-200 border-2 border-zinc-700 rounded-lg hover:bg-zinc-800 transition-colors"
+        >
+          Volver a la ficha
+        </button>
+        <button
+          type="button"
+          onClick={useDrawingAsPortrait}
+          className="px-4 py-2 text-sm font-semibold text-white bg-indigo-600 rounded-lg hover:bg-indigo-500 transition-colors"
+        >
+          Usar como retrato
+        </button>
       </div>
       
     </div>

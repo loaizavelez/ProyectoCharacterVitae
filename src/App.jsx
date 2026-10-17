@@ -6,6 +6,9 @@ import FlipTablet from './Components/FlipTablet/FlipTablet'; // Importa el compo
 // 1. Importas el componente del Canvas
 import DrawingCanvas from './Components/DrawingCanvas/DrawingCanvas'; 
 import Herramientas from './Components/Herramienta/Herramienta';
+import CreateAccount from './Pages/CreatAccount/AccountCreation';
+import Recovery from './Pages/CreatAccount/Recovery';
+import AdventurerSheet from './Pages/AdventurerSheet/AdventurerSheet';
 
 function App() {
   return (
@@ -18,7 +21,9 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/home" element={<Home />} />
         <Route path="/herramientas" element={<Herramientas />} />
-        
+        <Route path="/registro" element={<CreateAccount />} />
+        <Route path="/recuperacion" element={<Recovery />} />
+        <Route path="/sheet" element={<AdventurerSheet />} />
         <Route path="/canvas" element={
           <div className="min-h-screen bg-zinc-950 flex items-center justify-center p-4">
             <DrawingCanvas />

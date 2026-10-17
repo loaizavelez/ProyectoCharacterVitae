@@ -76,7 +76,7 @@ export default function CreateAccount() {
               </button>
               <button 
                 type="submit"
-                onClick={() => navigate('/home')} // Ajusta la ruta al siguiente paso de tu flujo
+                onClick={() => navigate('/recuperacion')}
                 className="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-xl transition-colors shadow-lg shadow-indigo-500/20 active:scale-95"
               >
                 Siguiente
