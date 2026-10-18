@@ -21,7 +21,7 @@ export default function Home() {
   });
 
   // ==========================================
-  // CARGAR DATOS
+  // CARGAR DATOS DIRECTO DEL USUARIO
   // ==========================================
   useEffect(() => {
     cargarDatosPantalla();
@@ -34,13 +34,13 @@ export default function Home() {
 
     if (currentUser) {
       setActiveProfile(currentUser.profile);
+      // AHORA LEE DIRECTAMENTE DEL INVENTARIO DEL JUGADOR ACTUAL
+      setToolsList(currentUser.inventory.tools || []);
+      setMilestonesList(currentUser.inventory.milestones || []);
+      setSkillsList(currentUser.inventory.skills || []);
     } else {
       navigate('/login');
     }
-
-    setToolsList(JSON.parse(localStorage.getItem('inventarioHerramientas')) || []);
-    setMilestonesList(JSON.parse(localStorage.getItem('inventarioHitos')) || []);
-    setSkillsList(JSON.parse(localStorage.getItem('inventarioHabilidades')) || []);
   };
 
   // ==========================================
@@ -53,15 +53,7 @@ export default function Home() {
 
     if (!currentUser) return;
 
-    // Empaquetamos todo el estado actual del jugador
-    const partidaGuardada = {
-      usuario: currentUser,
-      habilidades: JSON.parse(localStorage.getItem('inventarioHabilidades')) || [],
-      herramientas: JSON.parse(localStorage.getItem('inventarioHerramientas')) || [],
-      hitos: JSON.parse(localStorage.getItem('inventarioHitos')) || []
-    };
-
-    const blob = new Blob([JSON.stringify(partidaGuardada, null, 2)], { type: "application/json" });
+    const blob = new Blob([JSON.stringify(currentUser, null, 2)], { type: "application/json" });
     const url = URL.createObjectURL(blob);
     
     const a = document.createElement('a');
@@ -78,25 +70,20 @@ export default function Home() {
     const reader = new FileReader();
     reader.onload = (e) => {
       try {
-        const partida = JSON.parse(e.target.result);
+        const personajeImportado = JSON.parse(e.target.result);
         
-        // 1. Guardar o actualizar el usuario en la base de datos
         const usuariosDB = JSON.parse(localStorage.getItem('usuariosDB')) || [];
-        const index = usuariosDB.findIndex(u => u.id === partida.usuario.id);
+        const index = usuariosDB.findIndex(u => u.id === personajeImportado.id);
+        
         if (index >= 0) {
-          usuariosDB[index] = partida.usuario; // Actualiza si ya existía
+          usuariosDB[index] = personajeImportado;
         } else {
-          usuariosDB.push(partida.usuario); // Agrega si es nuevo en esta PC
+          usuariosDB.push(personajeImportado);
         }
+        
         localStorage.setItem('usuariosDB', JSON.stringify(usuariosDB));
-        localStorage.setItem('usuarioActivo', partida.usuario.id);
+        localStorage.setItem('usuarioActivo', personajeImportado.id);
 
-        // 2. Restaurar sus inventarios
-        localStorage.setItem('inventarioHabilidades', JSON.stringify(partida.habilidades));
-        localStorage.setItem('inventarioHerramientas', JSON.stringify(partida.herramientas));
-        localStorage.setItem('inventarioHitos', JSON.stringify(partida.hitos));
-
-        // 3. Refrescar la pantalla
         cargarDatosPantalla();
         alert('Partida restaurada con éxito.');
         
@@ -105,8 +92,6 @@ export default function Home() {
       }
     };
     reader.readAsText(file);
-    
-    // Limpiar el input para permitir subir el mismo archivo dos veces si es necesario
     event.target.value = null; 
   };
 
@@ -146,7 +131,16 @@ export default function Home() {
     const updatedSkills = [...skillsList, newSkill];
     
     setSkillsList(updatedSkills);
-    localStorage.setItem('inventarioHabilidades', JSON.stringify(updatedSkills));
+    
+    // AHORA SE GUARDA DENTRO DE LA BASE DE DATOS DEL USUARIO ACTUAL
+    const activeId = localStorage.getItem('usuarioActivo');
+    const usuariosDB = JSON.parse(localStorage.getItem('usuariosDB')) || [];
+    const userIndex = usuariosDB.findIndex(u => u.id === activeId);
+    
+    if (userIndex !== -1) {
+      usuariosDB[userIndex].inventory.skills = updatedSkills;
+      localStorage.setItem('usuariosDB', JSON.stringify(usuariosDB));
+    }
     
     setShowSkillModal(false);
     setSkillDraft({ name: '', attributes: [] });
@@ -164,34 +158,17 @@ export default function Home() {
       
       {/* PANEL DE CONTROL SUPERIOR */}
       <div className="absolute top-6 right-6 flex items-center gap-4 z-30">
-        
-        {/* Botón Guardar Partida */}
-        <button 
-          onClick={exportarPersonaje}
-          className="text-xs font-bold text-zinc-400 hover:text-indigo-400 uppercase tracking-widest transition-colors flex items-center gap-1"
-        >
+        <button onClick={exportarPersonaje} className="text-xs font-bold text-zinc-400 hover:text-indigo-400 uppercase tracking-widest transition-colors flex items-center gap-1">
           <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
           Guardar
         </button>
-
-        {/* Input Oculto y Botón para Cargar Partida */}
         <label className="text-xs font-bold text-zinc-400 hover:text-emerald-400 uppercase tracking-widest transition-colors flex items-center gap-1 cursor-pointer">
           <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/></svg>
           Cargar
-          <input 
-            type="file" 
-            accept=".json" 
-            onChange={importarPersonaje} 
-            className="hidden" 
-          />
+          <input type="file" accept=".json" onChange={importarPersonaje} className="hidden" />
         </label>
-
         <span className="text-zinc-700">|</span>
-
-        <button 
-          onClick={handleLogout}
-          className="text-xs font-bold text-zinc-500 hover:text-red-400 uppercase tracking-widest transition-colors"
-        >
+        <button onClick={handleLogout} className="text-xs font-bold text-zinc-500 hover:text-red-400 uppercase tracking-widest transition-colors">
           Cerrar Sesión
         </button>
       </div>
@@ -214,10 +191,7 @@ export default function Home() {
           </div>
           
           <div className={`flex items-center rounded-3xl transition-all duration-500 ease-in-out overflow-hidden ${starExpanded ? 'bg-zinc-900/90 border border-zinc-800 p-5 shadow-2xl backdrop-blur-sm' : 'p-2 border border-transparent'}`}>
-            <button 
-              onClick={() => setStarExpanded(!starExpanded)}
-              className={`relative flex items-center justify-center shrink-0 transition-all duration-500 ease-out z-20 ${starExpanded ? 'w-24 h-24 md:w-28 md:h-28 text-yellow-500 drop-shadow-[0_0_20px_rgba(234,179,8,0.4)] mr-4' : 'w-10 h-10 md:w-12 md:h-12 text-zinc-400 hover:text-yellow-500'}`}
-            >
+            <button onClick={() => setStarExpanded(!starExpanded)} className={`relative flex items-center justify-center shrink-0 transition-all duration-500 ease-out z-20 ${starExpanded ? 'w-24 h-24 md:w-28 md:h-28 text-yellow-500 drop-shadow-[0_0_20px_rgba(234,179,8,0.4)] mr-4' : 'w-10 h-10 md:w-12 md:h-12 text-zinc-400 hover:text-yellow-500'}`}>
               <svg xmlns="http://www.w3.org/2000/svg" className="w-full h-full transition-colors duration-500" viewBox="0 0 24 24" fill={starExpanded ? "currentColor" : "none"} stroke="currentColor" strokeWidth={starExpanded ? "1" : "2"} strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
               <span className={`absolute font-black uppercase tracking-tight transition-all duration-500 pointer-events-none text-center leading-none ${starExpanded ? 'opacity-100 text-zinc-950 text-[10px] md:text-xs mt-3 scale-100' : 'opacity-0 text-[0px] scale-50'}`}>{activeProfile.educationLevel}</span>
             </button>

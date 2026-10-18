@@ -14,7 +14,7 @@ export default function Landing() {
       ========================================================== */}
       <div className="flex flex-col min-h-[100svh] p-6 lg:hidden relative">
         
-        {/* Encabezado: Título y Sign In[cite: 26, 27] */}
+        {/* Encabezado: Título y Sign In */}
         <header className="flex flex-col-reverse md:flex-row md:justify-between md:items-center gap-4">
           <h1 className="text-3xl md:text-4xl font-black font-serif text-indigo-400 text-center md:text-left mt-4 md:mt-0">
             Character Vitae
@@ -24,15 +24,14 @@ export default function Landing() {
               onClick={() => navigate('/login')}
               className="px-4 py-1.5 border-2 border-zinc-300 text-zinc-300 font-bold rounded-lg text-sm hover:bg-zinc-800 transition-colors shadow-[2px_2px_0px_rgba(212,212,216,1)] active:shadow-none active:translate-y-[2px] active:translate-x-[2px]"
             >
-              sign in
+              Iniciar sesión
             </button>
           </div>
         </header>
 
-        {/* Contenido Principal (1 columna móvil, 2 columnas tablet)[cite: 26, 27] */}
+        {/* Contenido Principal */}
         <div className="flex-1 flex flex-col md:flex-row md:items-center justify-center gap-10 mt-10 md:mt-0">
           
-          {/* Lado Izquierdo (Textos y botón en tablet)[cite: 26, 27] */}
           <div className="flex flex-col items-center md:items-start text-center md:text-left flex-1 gap-8">
             <h2 className="text-2xl md:text-3xl font-bold font-serif text-zinc-200 leading-snug">
               Sube tus proyectos.<br/>
@@ -40,7 +39,6 @@ export default function Landing() {
               Se tu personaje
             </h2>
             
-            {/* Botón CTA (Visible solo en Tablet bajo el texto)[cite: 27] */}
             <button 
               onClick={() => navigate('/registro')}
               className="hidden md:block px-8 py-3 bg-zinc-100 hover:bg-zinc-300 text-zinc-950 font-bold font-serif text-lg border-2 border-zinc-950 rounded-xl transition-transform active:scale-95 shadow-lg"
@@ -49,7 +47,6 @@ export default function Landing() {
             </button>
           </div>
 
-          {/* Lado Derecho (Perfil Destacado)[cite: 26, 27] */}
           {showFeaturedProfile && (
             <div className="flex-1 w-full max-w-sm mx-auto md:mx-0">
               <h3 className="text-sm font-bold text-zinc-300 mb-2 ml-1 text-left">
@@ -76,7 +73,6 @@ export default function Landing() {
 
         </div>
 
-        {/* Botón CTA Inferior (Visible solo en Móvil)[cite: 26] */}
         <div className="mt-auto pt-8 md:hidden w-full">
           <button 
             onClick={() => navigate('/registro')}
@@ -92,10 +88,21 @@ export default function Landing() {
           VISTA ESCRITORIO (Diapositivas y Snap)
           Oculto en móvil y tablet (hidden lg:block)
       ========================================================== */}
-      <div className="hidden lg:block h-screen w-full overflow-y-scroll snap-y snap-mandatory scroll-smooth">
+      <div className="hidden lg:block h-screen w-full overflow-y-scroll snap-y snap-mandatory scroll-smooth relative">
         
         {/* Bloque 1: Bienvenida */}
         <section className="relative flex flex-col items-center justify-center h-screen snap-start overflow-hidden">
+          
+          {/* NUEVO: Botón de Iniciar Sesión en la esquina superior derecha */}
+          <div className="absolute top-8 right-10 z-30">
+            <button 
+              onClick={() => navigate('/login')}
+              className="px-6 py-2 border-2 border-zinc-300 bg-zinc-950/50 backdrop-blur-sm text-zinc-300 font-bold rounded-lg text-sm hover:bg-zinc-800 transition-colors shadow-[3px_3px_0px_rgba(212,212,216,1)] active:shadow-none active:translate-y-[3px] active:translate-x-[3px]"
+            >
+              Iniciar sesión
+            </button>
+          </div>
+
           <div className="absolute inset-0 z-0">
             <img 
               src="/ruta-a-tu-imagen-generada.jpg" 
@@ -104,11 +111,11 @@ export default function Landing() {
             />
             <div className="absolute inset-0 bg-zinc-950/60 backdrop-blur-[2px]"></div>
           </div>
-          <div className="relative z-10 text-center flex flex-col items-center">
+          <div className="relative z-10 text-center flex flex-col items-center mt-[-5vh]">
             <h1 className="text-8xl font-black font-serif text-indigo-400 tracking-wide mb-6 drop-shadow-2xl">
               Character Vitae
             </h1>
-            <div className="flex flex-col items-center gap-2 mt-16 opacity-60 animate-bounce">
+            <div className="flex flex-col items-center gap-2 mt-20 opacity-60 animate-bounce">
               <span className="text-xs uppercase tracking-widest font-bold">Inicia tu aventura</span>
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6"/></svg>
             </div>
@@ -131,7 +138,10 @@ export default function Landing() {
               <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" className="text-indigo-500/50 mx-auto mb-6 w-16 h-16"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
               <p className="text-zinc-400 text-xl font-medium tracking-wide">Tu gremio te está esperando.</p>
             </div>
-            <button onClick={() => navigate('/registro')} className="px-12 py-5 bg-zinc-100 hover:bg-white text-zinc-950 font-bold font-serif text-3xl border-4 border-transparent hover:border-indigo-500 rounded-2xl transition-all active:scale-95 hover:shadow-[0_0_50px_rgba(99,102,241,0.4)]">
+            <button 
+              onClick={() => navigate('/registro')} 
+              className="px-12 py-5 bg-zinc-100 hover:bg-white text-zinc-950 font-bold font-serif text-3xl border-4 border-transparent hover:border-indigo-500 rounded-2xl transition-all active:scale-95 hover:shadow-[0_0_50px_rgba(99,102,241,0.4)]"
+            >
               Crea tu cuenta
             </button>
           </div>
