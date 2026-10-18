@@ -8,7 +8,10 @@ export default function Herramienta() {
   const cardRef = useRef(null);
   const editingToolId = location.state?.toolId;
 
-  const savedTools = JSON.parse(localStorage.getItem('inventarioHerramientas')) || [];
+  const activeUserId = localStorage.getItem('usuarioActivo');
+  const usuariosDB = JSON.parse(localStorage.getItem('usuariosDB')) || [];
+  const activeUser = usuariosDB.find((user) => user.id === activeUserId);
+  const savedTools = activeUser?.inventory?.tools || [];
   const toolToEdit = savedTools.find((savedTool) => savedTool.id === editingToolId);
 
   // 1. Estado unificado (como en tu código original)
@@ -50,14 +53,40 @@ export default function Herramienta() {
     }
   };
 
- const handleForge = (e) => {
+  const handleForge = (e) => {
     e.preventDefault();
-    
-    const currentTools = JSON.parse(localStorage.getItem('inventarioHerramientas')) || [];
+
+    const activeId = localStorage.getItem('usuarioActivo');
+    const users = JSON.parse(localStorage.getItem('usuariosDB')) || [];
+    const userIndex = users.findIndex((user) => user.id === activeId);
+
+    if (userIndex === -1) {
+      navigate('/login');
+      return;
+    }
+
+    const currentUser = users[userIndex];
+    const currentTools = currentUser.inventory?.tools || [];
+    const existingTool = currentTools.some((savedTool) => savedTool.id === editingToolId);
+
+    if (editingToolId && !existingTool) {
+      alert('No se encontró la herramienta que intentas editar.');
+      return;
+    }
+
+    const toolId = editingToolId || Date.now();
     const updatedTools = editingToolId
-      ? currentTools.map((savedTool) => savedTool.id === editingToolId ? { ...tool, id: editingToolId } : savedTool)
-      : [...currentTools, { ...tool, id: Date.now() }];
-    localStorage.setItem('inventarioHerramientas', JSON.stringify(updatedTools));
+      ? currentTools.map((savedTool) => savedTool.id === editingToolId ? { ...tool, id: toolId } : savedTool)
+      : [...currentTools, { ...tool, id: toolId }];
+
+    users[userIndex] = {
+      ...currentUser,
+      inventory: {
+        ...currentUser.inventory,
+        tools: updatedTools
+      }
+    };
+    localStorage.setItem('usuariosDB', JSON.stringify(users));
 
     navigate('/home');
   };
