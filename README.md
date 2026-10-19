@@ -19,6 +19,9 @@ Entre sus funcionalidades principales se destacan:
 - Animaciones suaves y experiencias visuales con GSAP
 - Integración con Firebase para almacenamiento y servicios backend
 
+## Diagrama del proyecto
+
+![Diagrama del proyecto](./src/assets/Diagrama%20del%20proyecto.png)
 
 
 ## Tecnologías y paquetes utilizados
