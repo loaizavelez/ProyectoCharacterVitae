@@ -6,28 +6,37 @@ export default function AdventurerSheet() {
   const portrait = location.state?.portrait;
 
   return (
-    <main className="min-h-screen bg-zinc-950 text-zinc-100 font-sans p-4 md:p-10 flex justify-center items-start md:items-center">
+    <main className="min-h-screen bg-[#f4ecd8] text-[#2c241b] font-serif p-4 md:p-10 flex justify-center items-start md:items-center relative">
       
+      {/* Marca de agua decorativa de pergamino (opcional) */}
+      <div className="absolute inset-0 opacity-10 pointer-events-none mix-blend-multiply" style={{ backgroundImage: "url('data:image/svg+xml,%3Csvg width=\\'20\\' height=\\'20\\' viewBox=\\'0 0 20 20\\' xmlns=\\'http://www.w3.org/2000/svg\\'%3E%3Cg fill=\\'%238c7b61\\' fill-opacity=\\'0.4\\' fill-rule=\\'evenodd\\'%3E%3Ccircle cx=\\'3\\' cy=\\'3\\' r=\\'3\\'/%3E%3Ccircle cx=\\'13\\' cy=\\'13\\' r=\\'3\\'/%3E%3C/g%3E%3C/svg%3E')"}}></div>
+
       {/* Contenedor principal de la ficha */}
-      <div className="w-full max-w-5xl bg-zinc-900/80 md:bg-zinc-900 border border-transparent md:border-zinc-800 rounded-3xl p-6 md:p-12 shadow-none md:shadow-2xl">
+      <div className="w-full max-w-5xl bg-[#fdfaf3]/90 md:bg-[#fdfaf3] border-4 border-[#c4a46c] rounded-3xl p-6 md:p-12 shadow-none md:shadow-2xl relative z-10">
         
+        {/* Detalles en las esquinas del pergamino */}
+        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#c4a46c" strokeWidth="1" className="absolute -top-1 -left-1 opacity-50"><rect width="8" height="8" x="14" y="14" rx="2"/><rect width="8" height="8" x="2" y="2" rx="2"/><path d="M10 14v-4a2 2 0 0 1 2-2h4"/><path d="M14 10V6a2 2 0 0 0-2-2H8"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#c4a46c" strokeWidth="1" className="absolute -bottom-1 -right-1 opacity-50 rotate-180"><rect width="8" height="8" x="14" y="14" rx="2"/><rect width="8" height="8" x="2" y="2" rx="2"/><path d="M10 14v-4a2 2 0 0 1 2-2h4"/><path d="M14 10V6a2 2 0 0 0-2-2H8"/></svg>
+
         {/* ==========================================
             ENCABEZADO
-            Móvil: Flecha arriba, título abajo (o alineados si caben)
-            Tablet: Flecha y título en la misma línea
         =========================================== */}
-        <header className="flex items-center gap-4 mb-8 md:mb-12">
+        <header className="flex items-center gap-4 mb-8 md:mb-12 border-b-2 border-[#8b2e2e] pb-4">
           <button 
             onClick={() => navigate(-1)}
-            className="p-2 bg-zinc-950 md:bg-zinc-800 border border-zinc-800 md:border-zinc-700 rounded-full hover:bg-zinc-800 hover:border-zinc-600 transition-colors group"
+            className="p-2 text-[#2c241b] hover:text-[#8b2e2e] transition-colors group"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-zinc-400 group-hover:text-zinc-100 transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="transition-colors">
               <path d="m12 19-7-7 7-7"/><path d="M19 12H5"/>
             </svg>
           </button>
-          <h1 className="text-2xl md:text-3xl font-bold font-serif text-indigo-400 tracking-wide">
-            Ficha de aventurero
-          </h1>
+          
+          <div className="flex flex-col">
+            <h1 className="text-3xl md:text-5xl font-black font-epic text-[#2c241b] tracking-wider uppercase leading-none">
+              Ficha de Aventurero
+            </h1>
+            <span className="text-[#8b2e2e] text-xs md:text-sm font-bold tracking-widest uppercase mt-1">Registro oficial del gremio</span>
+          </div>
         </header>
 
         {/* ==========================================
@@ -37,83 +46,90 @@ export default function AdventurerSheet() {
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16">
             
-            {/* --- COLUMNA IZQUIERDA ---[cite: 10, 11] */}
+            {/* --- COLUMNA IZQUIERDA --- */}
             <div className="flex flex-col gap-6">
               
-              <div className="space-y-2">
-                <label className="text-sm md:text-base font-bold text-zinc-300 ml-1">
+              <div className="space-y-1.5">
+                <label className="text-sm md:text-base font-bold text-[#4a3f35] ml-1 uppercase tracking-wider">
                   Nombre de aventurero
                 </label>
                 <input 
                   type="text" 
-                  className="w-full bg-zinc-950 border-2 border-zinc-700 rounded-xl px-4 py-3 md:py-4 focus:border-indigo-500 focus:outline-none text-white transition-all text-lg"
+                  className="w-full bg-[#f4ecd8] border-2 border-[#c4a46c] rounded-xl px-4 py-3 md:py-4 focus:border-[#8b2e2e] focus:outline-none text-[#2c241b] font-bold text-lg md:text-xl transition-all shadow-inner"
+                  placeholder="Ej. Sir Galahad"
                 />
               </div>
 
-              <div className="space-y-2">
-                <label className="text-sm md:text-base font-bold text-zinc-300 ml-1">
+              <div className="space-y-1.5">
+                <label className="text-sm md:text-base font-bold text-[#4a3f35] ml-1 uppercase tracking-wider">
                   Clase
                 </label>
                 <input 
                   type="text" 
-                  className="w-full bg-zinc-950 border-2 border-zinc-700 rounded-xl px-4 py-3 md:py-4 focus:border-indigo-500 focus:outline-none text-white transition-all text-lg"
+                  className="w-full bg-[#f4ecd8] border-2 border-[#c4a46c] rounded-xl px-4 py-3 md:py-4 focus:border-[#8b2e2e] focus:outline-none text-[#2c241b] font-bold text-lg md:text-xl transition-all shadow-inner"
+                  placeholder="Ej. Paladín, Hechicero..."
                 />
               </div>
 
-              <div className="space-y-2">
-                <label className="text-sm md:text-base font-bold text-zinc-300 ml-1">
+              <div className="space-y-1.5">
+                <label className="text-sm md:text-base font-bold text-[#4a3f35] ml-1 uppercase tracking-wider">
                   Especialidad
                 </label>
                 <input 
                   type="text" 
-                  className="w-full bg-zinc-950 border-2 border-zinc-700 rounded-xl px-4 py-3 md:py-4 focus:border-indigo-500 focus:outline-none text-white transition-all text-lg"
+                  className="w-full bg-[#f4ecd8] border-2 border-[#c4a46c] rounded-xl px-4 py-3 md:py-4 focus:border-[#8b2e2e] focus:outline-none text-[#2c241b] font-bold text-lg md:text-xl transition-all shadow-inner"
+                  placeholder="Ej. Magia Arcana, Combate Pesado..."
                 />
               </div>
 
             </div>
 
             {/* --- COLUMNA DERECHA --- */}
-            {/* Usamos flexbox para controlar el orden interno según el dispositivo */}
             <div className="flex flex-col gap-6">
               
-              {/* TRASFONDO (Móvil: Arriba | Tablet: Abajo) */}
-                <div className="space-y-2 order-1 md:order-2 flex flex-col">
-                <label className="text-sm md:text-base font-bold text-zinc-300 ml-1">
-                    Trasfondo
+              {/* TRASFONDO */}
+              <div className="space-y-1.5 order-1 md:order-2 flex flex-col">
+                <label className="text-sm md:text-base font-bold text-[#4a3f35] ml-1 uppercase tracking-wider">
+                  Trasfondo
                 </label>
                 <textarea 
-                    className="w-full min-h-[120px] bg-zinc-950 border-2 border-zinc-700 rounded-xl px-4 py-4 focus:border-indigo-500 focus:outline-none text-white transition-colors resize-y text-lg"
-                    placeholder="Escribe la historia de tu aventurero..."
+                  className="w-full min-h-[140px] bg-[#f4ecd8] border-2 border-[#c4a46c] rounded-xl px-4 py-4 focus:border-[#8b2e2e] focus:outline-none text-[#2c241b] transition-colors resize-y text-base md:text-lg shadow-inner leading-relaxed"
+                  placeholder="Cuenta la historia de tu origen. Las cicatrices de batallas pasadas y los anhelos de gloria futura..."
                 ></textarea>
-                </div>
+              </div>
 
-              {/* RETRATO (Móvil: Abajo | Tablet: Arriba)[cite: 10, 11] */}
-              <div className="space-y-2 order-2 md:order-1">
-                <label className="text-sm md:text-base font-bold text-zinc-300 ml-1">
-                  Retrato de aventurero.
+              {/* RETRATO */}
+              <div className="space-y-1.5 order-2 md:order-1 border-b-2 md:border-b-0 border-[#d0c2a8] pb-6 md:pb-0 mb-2 md:mb-0">
+                <label className="text-sm md:text-base font-bold text-[#4a3f35] ml-1 uppercase tracking-wider block">
+                  Retrato de aventurero
                 </label>
-                <div className="flex gap-4">
-                  {/* Botón de Cámara[cite: 10, 11] */}
-                  <button type="button" className="w-24 md:w-32 aspect-square bg-zinc-950 border-2 border-zinc-700 hover:border-indigo-500 rounded-2xl flex items-center justify-center text-zinc-500 hover:text-indigo-400 transition-colors">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <div className="flex gap-4 mt-2">
+                  
+                  {/* Botón de Cámara */}
+                  <button type="button" className="w-24 md:w-32 aspect-square bg-[#f4ecd8] border-2 border-[#c4a46c] hover:border-[#8b2e2e] rounded-2xl flex flex-col items-center justify-center text-[#8c7b61] hover:text-[#8b2e2e] transition-colors shadow-sm group">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mb-1">
                       <rect width="18" height="18" x="3" y="3" rx="2" ry="2"/>
                       <circle cx="12" cy="13" r="4"/>
                       <path d="M8 3v4"/>
                       <path d="M16 3v4"/>
                     </svg>
+                    <span className="text-[10px] uppercase font-bold tracking-widest opacity-0 group-hover:opacity-100 transition-opacity">Capturar</span>
                   </button>
 
-                  {/* Espacio del Retrato[cite: 10, 11] */}
+                  {/* Espacio del Retrato */}
                   <button
                     type="button"
                     onClick={() => navigate('/canvas')}
                     aria-label="Dibujar retrato de aventurero"
-                    className="w-24 md:w-32 aspect-square overflow-hidden bg-zinc-950 border-2 border-zinc-700 hover:border-indigo-500 rounded-2xl flex items-center justify-center text-zinc-400 hover:text-indigo-400 font-serif font-bold text-sm md:text-base transition-colors"
+                    className="w-24 md:w-32 aspect-square overflow-hidden bg-[#f4ecd8] border-2 border-dashed border-[#8c7b61] hover:border-[#8b2e2e] rounded-2xl flex items-center justify-center text-[#8c7b61] hover:text-[#8b2e2e] font-serif font-bold text-sm md:text-base transition-colors shadow-sm relative group"
                   >
                     {portrait ? (
-                      <img src={portrait} alt="Retrato del aventurero" className="w-full h-full object-cover" />
+                      <img src={portrait} alt="Retrato del aventurero" className="w-full h-full object-cover rounded-xl" />
                     ) : (
-                      'Dibujar retrato'
+                      <div className="flex flex-col items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mb-1 opacity-70 group-hover:scale-110 transition-transform"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
+                        <span className="text-[11px] uppercase tracking-widest text-center px-2">Esbozar rostro</span>
+                      </div>
                     )}
                   </button>
                 </div>
@@ -125,14 +141,13 @@ export default function AdventurerSheet() {
           {/* ==========================================
               BOTÓN DE ENVÍO
           =========================================== */}
-          <div className="flex justify-center mt-4">
-            {/* Ocupa 100% en móvil, pero se centra y toma un ancho máximo en tablet[cite: 10, 11] */}
+          <div className="flex justify-center mt-6 pt-6 border-t-2 border-[#d0c2a8]">
             <button 
               type="submit" 
-              onClick={() => navigate('/home')} // Ajusta al destino que prefieras
-              className="w-full md:w-2/3 lg:w-1/2 py-4 bg-zinc-100 hover:bg-white text-zinc-950 font-bold font-serif text-xl border-2 border-zinc-950 rounded-2xl transition-transform active:scale-95 shadow-lg"
+              onClick={() => navigate('/home')}
+              className="w-full md:w-2/3 lg:w-1/2 py-4 md:py-5 bg-[#6b2323] hover:bg-[#521919] text-[#f4ecd8] border-2 border-[#4a1616] font-bold font-epic tracking-widest text-xl md:text-2xl rounded-2xl transition-all active:scale-95 shadow-[0_6px_0_#4a1616] active:shadow-none active:translate-y-[6px] uppercase"
             >
-              Forjar ficha
+              Sellar Ficha
             </button>
           </div>
 
