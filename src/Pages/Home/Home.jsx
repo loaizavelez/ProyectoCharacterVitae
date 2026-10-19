@@ -188,7 +188,6 @@ export default function Home() {
             </ul>
           </div>
           
-          {/* Insignia / Rango Expansible */}
           <div className={`flex items-center rounded-2xl transition-all duration-500 ease-in-out overflow-hidden ${starExpanded ? 'bg-[#fdfaf3]/90 border-2 border-[#c4a46c] p-5 shadow-[0_4px_0_#c4a46c] backdrop-blur-sm' : 'p-2 border border-transparent'}`}>
             <button onClick={() => setStarExpanded(!starExpanded)} className={`relative flex items-center justify-center shrink-0 transition-all duration-500 ease-out z-20 ${starExpanded ? 'w-24 h-24 md:w-28 md:h-28 text-[#d4af37] drop-shadow-sm mr-4' : 'w-10 h-10 md:w-12 md:h-12 text-[#8c7b61] hover:text-[#c4a46c]'}`}>
               <svg xmlns="http://www.w3.org/2000/svg" className="w-full h-full transition-colors duration-500" viewBox="0 0 24 24" fill={starExpanded ? "currentColor" : "none"} stroke="currentColor" strokeWidth={starExpanded ? "1" : "2"} strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
@@ -203,7 +202,6 @@ export default function Home() {
           </div>
         </header>
 
-        {/* Divisor Épico */}
         <div className="flex items-center gap-4 w-full mb-8 opacity-60">
           <hr className="flex-1 border-[#c4a46c] border-t-2" />
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8b2e2e" strokeWidth="2"><polygon points="12 2 22 12 12 22 2 12"/></svg>
@@ -244,9 +242,11 @@ export default function Home() {
         {/* ==========================================
             INVENTARIO: Herramientas e Hitos
         =========================================== */}
+        {/* Cambiamos la altura de grid estricta para que las tarjetas horizontales respiren mejor */}
         <section className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
+          
           {/* Tarjeta Herramientas */}
-          <div className="bg-[#fdfaf3] border-2 border-[#c4a46c] rounded-2xl p-5 shadow-[0_4px_0_#c4a46c] flex flex-col h-[250px]">
+          <div className="bg-[#fdfaf3] border-2 border-[#c4a46c] rounded-2xl p-5 shadow-[0_4px_0_#c4a46c] flex flex-col h-[350px]">
             <div className="flex justify-between items-center mb-4 border-b-2 border-[#d0c2a8] pb-2 shrink-0">
               <h3 className="text-xl font-bold font-epic text-[#2c241b] tracking-wider uppercase">Herramientas</h3>
               <button onClick={() => navigate('/herramientas')} className="text-2xl font-light text-[#8c7b61] hover:text-[#8b2e2e] transition-colors px-2">+</button>
@@ -256,7 +256,7 @@ export default function Home() {
                 <div className="flex-1 flex flex-col items-center justify-center text-center opacity-70"><span className="text-[#8c7b61] text-sm italic font-medium">Bolsa vacía...</span></div>
               ) : (
                 toolsList.map((t) => (
-                  <button key={t.id} type="button" onClick={() => navigate('/herramientas', { state: { toolId: t.id } })} className="bg-[#f4ecd8] border border-[#c4a46c] rounded-xl p-3 flex justify-between items-center text-left group hover:border-[#8b2e2e] shadow-sm transition-all hover:-translate-y-0.5 cursor-pointer">
+                  <button key={t.id} type="button" onClick={() => navigate('/herramientas', { state: { toolId: t.id } })} className="bg-[#f4ecd8] border border-[#c4a46c] rounded-xl p-3 flex justify-between items-center text-left group hover:border-[#8b2e2e] shadow-sm transition-all hover:-translate-y-0.5 cursor-pointer shrink-0">
                     <div className="flex flex-col overflow-hidden">
                       <span className="font-bold text-[#2c241b] text-sm truncate">{t.name}</span>
                       <span className="text-[10px] text-[#8b2e2e] uppercase tracking-widest font-bold mt-0.5">{t.discipline}</span>
@@ -271,20 +271,77 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Tarjeta Hitos */}
-          <div className="bg-[#fdfaf3] border-2 border-[#c4a46c] rounded-2xl p-5 shadow-[0_4px_0_#c4a46c] flex flex-col h-[250px]">
+          {/* Tarjeta Hitos (Diseño Carta Horizontal)[cite: 7] */}
+          <div className="bg-[#fdfaf3] border-2 border-[#c4a46c] rounded-2xl p-5 shadow-[0_4px_0_#c4a46c] flex flex-col h-[350px]">
             <div className="flex justify-between items-center mb-4 border-b-2 border-[#d0c2a8] pb-2 shrink-0">
               <h3 className="text-xl font-bold font-epic text-[#2c241b] tracking-wider uppercase">Hitos & Proezas</h3>
               <button onClick={() => navigate('/hitos')} className="text-2xl font-light text-[#8c7b61] hover:text-[#8b2e2e] transition-colors px-2">+</button>
             </div>
-            <div className="flex-1 overflow-y-auto flex flex-col gap-3 pr-1 custom-scrollbar">
+            <div className="flex-1 overflow-y-auto flex flex-col gap-4 pr-1 custom-scrollbar">
               {milestonesList.length === 0 ? (
                 <div className="flex-1 flex flex-col items-center justify-center text-center opacity-70"><span className="text-[#8c7b61] text-sm italic font-medium">Sin aventuras registradas...</span></div>
               ) : (
                 milestonesList.map((milestone) => (
-                  <button key={milestone.id} type="button" onClick={() => navigate('/hitos', { state: { milestoneId: milestone.id } })} className="bg-[#f4ecd8] border border-[#c4a46c] rounded-xl p-3 flex flex-col gap-1 text-left hover:border-[#8b2e2e] shadow-sm transition-all hover:-translate-y-0.5 cursor-pointer">
-                    <span className="font-bold text-[#2c241b] text-sm truncate">{milestone.name}</span>
-                    <span className="text-xs text-[#4a3f35] font-medium line-clamp-2">{milestone.description}</span>
+                  <button 
+                    key={milestone.id} 
+                    type="button" 
+                    onClick={() => navigate('/hitos', { state: { milestoneId: milestone.id } })} 
+                    className="bg-[#f4ecd8] border border-[#c4a46c] rounded-xl flex flex-row w-full text-left hover:border-[#8b2e2e] shadow-sm transition-all hover:-translate-y-0.5 cursor-pointer overflow-hidden group shrink-0"
+                  >
+                    {/* Imagen Izquierda[cite: 7] */}
+                    <div className="w-24 shrink-0 border-r border-[#c4a46c] bg-[#e5d9c5]">
+                      {milestone.image ? (
+                        <img src={milestone.image} alt={milestone.name} className="w-full h-full object-cover" />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center text-[#8c7b61] opacity-50 bg-[#e5d9c5]">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Contenido Derecha[cite: 7] */}
+                    <div className="flex flex-col flex-1 p-3 justify-center min-w-0">
+                      
+                      {/* Estado y XP[cite: 7] */}
+                      <div className="flex justify-between items-center mb-1">
+                        <div className="flex items-center gap-1">
+                          {milestone.isActive ? (
+                            <span className="text-[9px] font-bold uppercase tracking-widest text-[#8b2e2e] flex items-center gap-1">
+                              <span className="w-1.5 h-1.5 rounded-full bg-[#8b2e2e] animate-pulse"></span>
+                              Activa
+                            </span>
+                          ) : (
+                            <span className="text-[9px] font-bold uppercase tracking-widest text-emerald-700 flex items-center gap-1">
+                              <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                              Completada
+                            </span>
+                          )}
+                          {!milestone.isActive && <span className="text-[#8b2e2e] text-[9px] font-bold tracking-widest ml-1">+400 XP</span>}
+                        </div>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#8c7b61" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+                      </div>
+
+                      {/* Título[cite: 7] */}
+                      <h4 className="text-base font-black font-epic text-[#2c241b] uppercase truncate leading-tight mb-0.5">
+                        {milestone.name}
+                      </h4>
+
+                      {/* Subtítulo[cite: 7] */}
+                      <p className="text-[9px] text-[#8c7b61] font-medium truncate mb-2">
+                        {milestone.guild} {milestone.duration ? `· ${milestone.duration}` : ''} {milestone.tools?.length > 0 ? `· ${milestone.tools[0]}` : ''}
+                      </p>
+
+                      {/* Bottom (Badge & Link)[cite: 7] */}
+                      <div className="flex justify-between items-center mt-auto">
+                        <span className="px-1.5 py-0.5 bg-[#fdfaf3] border border-[#c4a46c] rounded text-[8px] font-black text-[#2c241b] uppercase tracking-widest">
+                          Legendario
+                        </span>
+                        <span className="text-[9px] font-bold text-[#8b2e2e] flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                          Ver / Editar <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                        </span>
+                      </div>
+
+                    </div>
                   </button>
                 ))
               )}

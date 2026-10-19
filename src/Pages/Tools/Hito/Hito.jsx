@@ -18,14 +18,16 @@ export default function Hito() {
   // 2. Estado unificado del hito
   const [milestone, setMilestone] = useState(() => milestoneToEdit ? {
     ...milestoneToEdit,
-    tools: milestoneToEdit.tools || []
+    tools: milestoneToEdit.tools || [],
+    image: milestoneToEdit.image || null
   } : {
     name: '',
     guild: 'Arte digital',
     duration: '',
     isActive: false,
     description: '',
-    tools: [] // Array para guardar las herramientas seleccionadas
+    tools: [], 
+    image: null 
   });
 
   const handleChange = (e) => {
@@ -36,7 +38,17 @@ export default function Hito() {
     }));
   };
 
-  // Función para agregar/quitar herramientas al hito con un clic
+  const handleImageUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setMilestone((prev) => ({ ...prev, image: reader.result }));
+      };
+      reader.readAsDataURL(file); 
+    }
+  };
+
   const toggleTool = (toolName) => {
     setMilestone((prev) => {
       const isSelected = prev.tools.includes(toolName);
@@ -115,58 +127,108 @@ export default function Hito() {
             
             {/* ==========================================
                 COLUMNA IZQUIERDA: Vista Previa
-                Visible solo en tablet/desktop
             =========================================== */}
             <section className="hidden md:flex flex-col gap-4">
-              <h2 className="text-xl font-bold text-[#8b2e2e] font-epic uppercase tracking-widest">Inspeccionar</h2>
+              <h2 className="text-xl font-bold text-[#8b2e2e] font-epic uppercase tracking-widest">Vista Previa</h2>
               
-              <article className="flex-1 min-h-[400px] border-4 border-[#c4a46c] bg-[#f4ecd8] rounded-2xl p-8 flex flex-col relative overflow-hidden shadow-inner">
+              <article className="flex-1 border-2 border-[#c4a46c] bg-[#fdfaf3] rounded-xl flex flex-col overflow-hidden shadow-lg h-full">
                 
-                {/* Adornos de la tarjeta */}
-                <div className="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-[#8c7b61] m-4"></div>
-                <div className="absolute top-0 right-0 w-8 h-8 border-t-2 border-r-2 border-[#8c7b61] m-4"></div>
-
-                <div className="flex justify-between items-start gap-4 border-b-2 border-[#d0c2a8] pb-4 mb-4 mt-2">
-                  <div className="min-w-0">
-                    <h3 className="text-3xl font-black font-epic text-[#2c241b] uppercase break-words tracking-wide">
-                      {milestone.name || 'Hazaña Desconocida'}
-                    </h3>
-                    <p className="text-[#8b2e2e] uppercase tracking-widest text-xs mt-1 font-bold">
-                      {milestone.guild}
-                    </p>
+                {/* IMAGEN CUBRIENDO LA CABECERA (Estilo Carta) */}
+                {milestone.image ? (
+                  <div className="w-full h-48 lg:h-64 border-b-2 border-[#c4a46c] shrink-0">
+                    <img 
+                      src={milestone.image} 
+                      alt="Ilustración de la hazaña" 
+                      className="w-full h-full object-cover"
+                    />
                   </div>
-                  {/* Estado de la misión con whitespace-nowrap y shrink-0 */}
-                  <div className={`px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest border-2 whitespace-nowrap shrink-0 ${milestone.isActive ? 'bg-[#fdfaf3] border-[#8b2e2e] text-[#8b2e2e] shadow-[0_2px_0_#8b2e2e]' : 'bg-[#e5d9c5] border-[#8c7b61] text-[#4a3f35]'}`}>
-                    {milestone.isActive ? 'Misión Activa' : 'Completada'}
-                  </div>
-                </div>
-
-                <p className="text-[#4a3f35] text-base mb-6 flex-1 whitespace-pre-wrap font-medium leading-relaxed">
-                  {milestone.description || 'La crónica de tu logro aparecerá aquí...'}
-                </p>
-
-                {/* Insignias de herramientas en la vista previa */}
-                {milestone.tools.length > 0 && (
-                  <div className="mt-auto pt-4 border-t-2 border-[#d0c2a8]">
-                    <p className="text-[10px] text-[#8c7b61] uppercase tracking-widest mb-3 font-bold">Artefactos Empleados</p>
-                    <div className="flex flex-wrap gap-2">
-                      {milestone.tools.map(tool => (
-                        <span key={tool} className="px-3 py-1.5 bg-[#fdfaf3] border border-[#c4a46c] rounded-lg text-xs font-bold text-[#8b2e2e] shadow-sm uppercase tracking-wide">
-                          {tool}
-                        </span>
-                      ))}
-                    </div>
+                ) : (
+                  <div className="w-full h-48 lg:h-64 bg-[#e5d9c5] border-b-2 border-[#c4a46c] flex items-center justify-center shrink-0">
+                    <span className="text-[#8c7b61] font-bold uppercase tracking-widest text-xs flex flex-col items-center gap-2">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="opacity-50"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                      Sin ilustración
+                    </span>
                   </div>
                 )}
+
+                {/* CONTENIDO DE LA TARJETA */}
+                <div className="p-6 flex flex-col flex-1">
+                  
+                  {/* Fila de Estado y XP */}
+                  <div className="flex justify-between items-center text-xs font-bold uppercase tracking-widest mb-3">
+                    {milestone.isActive ? (
+                      <span className="text-[#8b2e2e] flex items-center gap-1.5">
+                        <span className="w-2 h-2 rounded-full bg-[#8b2e2e] animate-pulse"></span>
+                        Misión Activa
+                      </span>
+                    ) : (
+                      <span className="text-emerald-700 flex items-center gap-1.5">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                        Completada
+                      </span>
+                    )}
+                    <span className="text-[#8b2e2e]">+400 XP</span>
+                  </div>
+
+                  {/* Título Principal */}
+                  <h3 className="text-3xl font-black font-epic text-[#2c241b] uppercase break-words tracking-wide leading-tight mb-1">
+                    {milestone.name || 'Hazaña Desconocida'}
+                  </h3>
+
+                  {/* Subtítulo (Gremio y Fecha) */}
+                  <p className="text-[#8c7b61] text-sm font-medium mb-4">
+                    {milestone.guild} {milestone.duration && `· ${milestone.duration}`}
+                  </p>
+
+                  {/* Descripción */}
+                  <p className="text-[#4a3f35] text-base mb-6 flex-1 whitespace-pre-wrap font-medium leading-relaxed">
+                    {milestone.description || 'La crónica de tu logro aparecerá aquí...'}
+                  </p>
+
+                  {/* Herramientas e Insignias Inferiores */}
+                  {milestone.tools.length > 0 && (
+                    <div className="mt-auto flex items-center flex-wrap gap-2 text-sm pt-4 border-t border-[#d0c2a8]/50">
+                      <span className="px-2 py-1 bg-[#f4ecd8] border border-[#c4a46c] rounded text-[10px] font-black text-[#2c241b] uppercase tracking-widest">
+                        Legendario
+                      </span>
+                      <span className="text-[#8c7b61] font-medium">
+                        {milestone.tools.join(' · ')}
+                      </span>
+                    </div>
+                  )}
+
+                </div>
               </article>
             </section>
 
             {/* ==========================================
                 COLUMNA DERECHA: Formulario
-                Visible en móvil y tablet
             =========================================== */}
             <section className="flex flex-col gap-6">
               
+              {/* Imagen (Opcional) */}
+              <div className="space-y-1.5">
+                <label className="text-sm font-bold text-[#4a3f35] ml-1 uppercase tracking-wider">Ilustración de la hazaña</label>
+                <label className="flex items-center justify-center w-full bg-[#f4ecd8] border-2 border-dashed border-[#8c7b61] hover:border-[#8b2e2e] rounded-xl px-4 py-6 cursor-pointer text-[#8c7b61] hover:text-[#8b2e2e] transition-colors shadow-inner group">
+                  <div className="flex flex-col items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="opacity-70 group-hover:scale-110 transition-transform">
+                      <rect width="18" height="18" x="3" y="3" rx="2" ry="2"/>
+                      <circle cx="8.5" cy="8.5" r="1.5"/>
+                      <polyline points="21 15 16 10 5 21"/>
+                    </svg>
+                    <span className="text-[11px] uppercase tracking-widest text-center px-2 font-bold">
+                      {milestone.image ? 'Cambiar ilustración' : 'Subir pergamino visual (PNG/JPG)'}
+                    </span>
+                  </div>
+                  <input 
+                    type="file" 
+                    accept="image/png, image/jpeg" 
+                    className="hidden" 
+                    onChange={handleImageUpload} 
+                  />
+                </label>
+              </div>
+
               {/* Nombre de la misión */}
               <div className="space-y-1.5">
                 <label htmlFor="name" className="text-sm font-bold text-[#4a3f35] ml-1 uppercase tracking-wider">Nombre de la misión</label>
@@ -176,7 +238,7 @@ export default function Hito() {
                   name="name"
                   value={milestone.name}
                   onChange={handleChange}
-                  placeholder="Ej. Derrotar al Dragón de Bug, Lanzamiento V1..."
+                  placeholder="Ej. El Observatorio Astral..."
                   className="w-full bg-[#f4ecd8] border-2 border-[#c4a46c] rounded-xl px-4 py-3.5 focus:border-[#8b2e2e] focus:outline-none text-[#2c241b] placeholder:text-[#a39481] transition-colors shadow-inner font-bold"
                   required
                 />
@@ -211,7 +273,7 @@ export default function Hito() {
                     name="duration"
                     value={milestone.duration}
                     onChange={handleChange}
-                    placeholder="Ej. 3 Lunas, 1 Año..."
+                    placeholder="Ej. Sep 1-30, 2026..."
                     className="w-full bg-[#f4ecd8] border-2 border-[#c4a46c] rounded-xl px-4 py-3.5 focus:border-[#8b2e2e] focus:outline-none text-[#2c241b] placeholder:text-[#a39481] transition-colors shadow-inner font-bold"
                   />
                 </div>
