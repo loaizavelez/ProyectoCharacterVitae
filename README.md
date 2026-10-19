@@ -19,9 +19,7 @@ Entre sus funcionalidades principales se destacan:
 - Animaciones suaves y experiencias visuales con GSAP
 - Integración con Firebase para almacenamiento y servicios backend
 
-## Diagrama del proyecto
 
-<img src="file:///C:/Users/PC/AppData/Roaming/Code/agentSessionData/6486d280-6003-4b85-b687-1a346d80119a/attachments/9ba49881-61cf-49a4-81b2-7180f18fb118/Diagrama%20del%20proyecto.png" alt="Diagrama del proyecto de Character Vitae" width="900" />
 
 ## Tecnologías y paquetes utilizados
 
