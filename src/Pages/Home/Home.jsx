@@ -34,7 +34,6 @@ export default function Home() {
 
     if (currentUser) {
       setActiveProfile(currentUser.profile);
-      // AHORA LEE DIRECTAMENTE DEL INVENTARIO DEL JUGADOR ACTUAL
       setToolsList(currentUser.inventory.tools || []);
       setMilestonesList(currentUser.inventory.milestones || []);
       setSkillsList(currentUser.inventory.skills || []);
@@ -85,7 +84,7 @@ export default function Home() {
         localStorage.setItem('usuarioActivo', personajeImportado.id);
 
         cargarDatosPantalla();
-        alert('Partida restaurada con éxito.');
+        alert('Crónicas restauradas con éxito.');
         
       } catch (error) {
         alert("El pergamino (archivo JSON) está corrupto.");
@@ -132,7 +131,6 @@ export default function Home() {
     
     setSkillsList(updatedSkills);
     
-    // AHORA SE GUARDA DENTRO DE LA BASE DE DATOS DEL USUARIO ACTUAL
     const activeId = localStorage.getItem('usuarioActivo');
     const usuariosDB = JSON.parse(localStorage.getItem('usuariosDB')) || [];
     const userIndex = usuariosDB.findIndex(u => u.id === activeId);
@@ -154,21 +152,21 @@ export default function Home() {
   };
 
   return (
-    <main className="min-h-screen bg-zinc-950 text-zinc-100 font-sans p-6 md:p-12 flex flex-col items-center overflow-x-hidden relative">
+    <main className="min-h-screen bg-[#f4ecd8] text-[#2c241b] font-serif p-6 md:p-12 flex flex-col items-center overflow-x-hidden relative">
       
       {/* PANEL DE CONTROL SUPERIOR */}
       <div className="absolute top-6 right-6 flex items-center gap-4 z-30">
-        <button onClick={exportarPersonaje} className="text-xs font-bold text-zinc-400 hover:text-indigo-400 uppercase tracking-widest transition-colors flex items-center gap-1">
+        <button onClick={exportarPersonaje} className="text-xs font-bold text-[#8c7b61] hover:text-[#8b2e2e] uppercase tracking-widest transition-colors flex items-center gap-1">
           <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
           Guardar
         </button>
-        <label className="text-xs font-bold text-zinc-400 hover:text-emerald-400 uppercase tracking-widest transition-colors flex items-center gap-1 cursor-pointer">
+        <label className="text-xs font-bold text-[#8c7b61] hover:text-[#c4a46c] uppercase tracking-widest transition-colors flex items-center gap-1 cursor-pointer">
           <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/></svg>
           Cargar
           <input type="file" accept=".json" onChange={importarPersonaje} className="hidden" />
         </label>
-        <span className="text-zinc-700">|</span>
-        <button onClick={handleLogout} className="text-xs font-bold text-zinc-500 hover:text-red-400 uppercase tracking-widest transition-colors">
+        <span className="text-[#d0c2a8]">|</span>
+        <button onClick={handleLogout} className="text-xs font-bold text-[#8c7b61] hover:text-[#8b2e2e] uppercase tracking-widest transition-colors">
           Cerrar Sesión
         </button>
       </div>
@@ -180,55 +178,63 @@ export default function Home() {
         =========================================== */}
         <header className="flex justify-between items-start w-full mb-12">
           <div className="z-10 mt-2">
-            <h1 className="text-3xl md:text-4xl font-bold font-serif text-indigo-400 leading-tight mb-4 capitalize">
+            <h1 className="text-4xl md:text-5xl font-black font-epic text-[#2c241b] tracking-wider mb-4 uppercase">
               {activeProfile.name}
             </h1>
-            <ul className="space-y-2 text-sm md:text-base text-zinc-300 font-medium capitalize">
-              <li className="flex items-center gap-2"><span className="w-2 h-2 rounded-full border border-zinc-400"></span>{activeProfile.location}</li>
-              <li className="flex items-center gap-2"><span className="w-2 h-2 rounded-full border border-zinc-400"></span>Rango: {activeProfile.educationLevel}</li>
-              <li className="flex items-center gap-2"><span className="w-2 h-2 rounded-full border border-zinc-400"></span>{activeProfile.institution}</li>
+            <ul className="space-y-2 text-sm md:text-base text-[#4a3f35] font-bold capitalize">
+              <li className="flex items-center gap-2"><span className="w-2 h-2 rotate-45 bg-[#c4a46c] border border-[#8c7b61]"></span>{activeProfile.location}</li>
+              <li className="flex items-center gap-2"><span className="w-2 h-2 rotate-45 bg-[#c4a46c] border border-[#8c7b61]"></span>Rango: {activeProfile.educationLevel}</li>
+              <li className="flex items-center gap-2"><span className="w-2 h-2 rotate-45 bg-[#c4a46c] border border-[#8c7b61]"></span>{activeProfile.institution}</li>
             </ul>
           </div>
           
-          <div className={`flex items-center rounded-3xl transition-all duration-500 ease-in-out overflow-hidden ${starExpanded ? 'bg-zinc-900/90 border border-zinc-800 p-5 shadow-2xl backdrop-blur-sm' : 'p-2 border border-transparent'}`}>
-            <button onClick={() => setStarExpanded(!starExpanded)} className={`relative flex items-center justify-center shrink-0 transition-all duration-500 ease-out z-20 ${starExpanded ? 'w-24 h-24 md:w-28 md:h-28 text-yellow-500 drop-shadow-[0_0_20px_rgba(234,179,8,0.4)] mr-4' : 'w-10 h-10 md:w-12 md:h-12 text-zinc-400 hover:text-yellow-500'}`}>
+          <div className={`flex items-center rounded-2xl transition-all duration-500 ease-in-out overflow-hidden ${starExpanded ? 'bg-[#fdfaf3]/90 border-2 border-[#c4a46c] p-5 shadow-[0_4px_0_#c4a46c] backdrop-blur-sm' : 'p-2 border border-transparent'}`}>
+            <button onClick={() => setStarExpanded(!starExpanded)} className={`relative flex items-center justify-center shrink-0 transition-all duration-500 ease-out z-20 ${starExpanded ? 'w-24 h-24 md:w-28 md:h-28 text-[#d4af37] drop-shadow-sm mr-4' : 'w-10 h-10 md:w-12 md:h-12 text-[#8c7b61] hover:text-[#c4a46c]'}`}>
               <svg xmlns="http://www.w3.org/2000/svg" className="w-full h-full transition-colors duration-500" viewBox="0 0 24 24" fill={starExpanded ? "currentColor" : "none"} stroke="currentColor" strokeWidth={starExpanded ? "1" : "2"} strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
-              <span className={`absolute font-black uppercase tracking-tight transition-all duration-500 pointer-events-none text-center leading-none ${starExpanded ? 'opacity-100 text-zinc-950 text-[10px] md:text-xs mt-3 scale-100' : 'opacity-0 text-[0px] scale-50'}`}>{activeProfile.educationLevel}</span>
+              <span className={`absolute font-black uppercase tracking-tight transition-all duration-500 pointer-events-none text-center leading-none ${starExpanded ? 'opacity-100 text-[#2c241b] text-[10px] md:text-xs mt-3 scale-100' : 'opacity-0 text-[0px] scale-50'}`}>{activeProfile.educationLevel}</span>
             </button>
             <div className={`flex flex-col justify-center transition-all duration-500 ease-in-out ${starExpanded ? 'max-w-[400px] opacity-100 translate-x-0' : 'max-w-0 opacity-0 translate-x-8'}`}>
               <div className="whitespace-nowrap min-w-max pr-4">
-                <h3 className="text-xl md:text-2xl font-bold font-serif text-zinc-100 leading-none capitalize">{activeProfile.institution}</h3>
-                <p className="text-[10px] md:text-xs text-zinc-400 mb-4 mt-1.5 uppercase tracking-widest font-semibold">Base principal</p>
+                <h3 className="text-xl md:text-2xl font-black font-epic text-[#2c241b] leading-none uppercase">{activeProfile.institution}</h3>
+                <p className="text-[10px] md:text-xs text-[#8b2e2e] mb-4 mt-1.5 uppercase tracking-widest font-bold">Base principal</p>
               </div>
             </div>
           </div>
         </header>
 
+        <div className="flex items-center gap-4 w-full mb-8 opacity-60">
+          <hr className="flex-1 border-[#c4a46c] border-t-2" />
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8b2e2e" strokeWidth="2"><polygon points="12 2 22 12 12 22 2 12"/></svg>
+          <hr className="flex-1 border-[#c4a46c] border-t-2" />
+        </div>
+
         {/* ==========================================
             SECCIÓN CENTRAL: Habilidades / Rasgos
         =========================================== */}
         <section className="mb-12 w-full flex flex-col items-center">
-          <h2 className="text-lg font-bold font-serif text-zinc-100 mb-6 w-full text-left md:text-center">Rasgos y Habilidades</h2>
+          <h2 className="text-2xl font-bold font-epic text-[#2c241b] mb-6 w-full text-left md:text-center tracking-widest border-b-2 border-transparent md:border-[#8b2e2e] inline-block pb-2">
+            RASGOS Y HABILIDADES
+          </h2>
           <div className="flex flex-row overflow-x-auto w-full gap-4 py-6 px-4 custom-scrollbar md:justify-center">
             {skillsList.map(skill => (
-              <div key={skill.id} className="w-36 md:w-40 shrink-0 aspect-[2/3] bg-zinc-900 border-2 border-zinc-700 rounded-xl flex flex-col p-4 shadow-lg hover:border-indigo-500 transition-colors">
-                <div className="flex justify-center mb-auto mt-2 text-zinc-500">
+              <div key={skill.id} className="w-36 md:w-40 shrink-0 aspect-[2/3] bg-[#fdfaf3] border-2 border-[#c4a46c] rounded-xl flex flex-col p-4 shadow-sm hover:border-[#8b2e2e] hover:-translate-y-1 transition-all">
+                <div className="flex justify-center mb-auto mt-2 text-[#8c7b61]">
                   <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg>
                 </div>
-                <h3 className="text-center font-bold text-zinc-100 mb-4 truncate w-full">{skill.name}</h3>
-                <div className="flex flex-col gap-1 text-[10px] md:text-xs font-medium text-zinc-400 w-full">
+                <h3 className="text-center font-bold text-[#2c241b] mb-4 truncate w-full uppercase text-sm tracking-wide">{skill.name}</h3>
+                <div className="flex flex-col gap-1 text-[10px] md:text-xs font-bold text-[#4a3f35] w-full">
                   {skill.attributes.map((attr, index) => (
-                    <div key={index} className="flex justify-between w-full">
+                    <div key={index} className="flex justify-between w-full border-b border-[#d0c2a8]/50 pb-1">
                       <span className="truncate">{attr.name}</span>
-                      <span className="text-indigo-400">+{attr.value}</span>
+                      <span className="text-[#8b2e2e]">+{attr.value}</span>
                     </div>
                   ))}
                 </div>
               </div>
             ))}
-            <button onClick={() => setShowSkillModal(true)} className="w-36 md:w-40 shrink-0 aspect-[2/3] bg-zinc-900/50 border-2 border-dashed border-zinc-700 hover:border-indigo-500 hover:bg-zinc-900 rounded-xl flex flex-col items-center justify-center gap-2 text-zinc-500 hover:text-indigo-400 transition-all hover:scale-[1.02] active:scale-95 shadow-lg">
+            <button onClick={() => setShowSkillModal(true)} className="w-36 md:w-40 shrink-0 aspect-[2/3] bg-[#f4ecd8] border-2 border-dashed border-[#c4a46c] hover:border-[#8b2e2e] hover:bg-[#fdfaf3] rounded-xl flex flex-col items-center justify-center gap-2 text-[#8c7b61] hover:text-[#8b2e2e] transition-all hover:scale-[1.02] active:scale-95 shadow-sm">
               <span className="text-6xl font-light mb-2">+</span>
-              <span className="text-xs font-bold uppercase tracking-widest">Agregar</span>
+              <span className="text-xs font-bold uppercase tracking-widest">Aprender</span>
             </button>
           </div>
         </section>
@@ -236,25 +242,28 @@ export default function Home() {
         {/* ==========================================
             INVENTARIO: Herramientas e Hitos
         =========================================== */}
+        {/* Cambiamos la altura de grid estricta para que las tarjetas horizontales respiren mejor */}
         <section className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
-          <div className="bg-zinc-900 border-2 border-zinc-700 rounded-2xl p-5 shadow-lg flex flex-col h-[250px]">
-            <div className="flex justify-between items-center mb-4 border-b border-zinc-800 pb-2 shrink-0">
-              <h3 className="text-xl font-bold font-serif text-zinc-100">Herramientas</h3>
-              <button onClick={() => navigate('/herramientas')} className="text-2xl font-light text-zinc-400 hover:text-indigo-400 transition-colors px-2">+</button>
+          
+          {/* Tarjeta Herramientas */}
+          <div className="bg-[#fdfaf3] border-2 border-[#c4a46c] rounded-2xl p-5 shadow-[0_4px_0_#c4a46c] flex flex-col h-[350px]">
+            <div className="flex justify-between items-center mb-4 border-b-2 border-[#d0c2a8] pb-2 shrink-0">
+              <h3 className="text-xl font-bold font-epic text-[#2c241b] tracking-wider uppercase">Herramientas</h3>
+              <button onClick={() => navigate('/herramientas')} className="text-2xl font-light text-[#8c7b61] hover:text-[#8b2e2e] transition-colors px-2">+</button>
             </div>
-            <div className="flex-1 overflow-y-auto flex flex-col gap-2 pr-1 custom-scrollbar">
+            <div className="flex-1 overflow-y-auto flex flex-col gap-3 pr-1 custom-scrollbar">
               {toolsList.length === 0 ? (
-                <div className="flex-1 flex flex-col items-center justify-center text-center opacity-50"><span className="text-zinc-400 text-sm italic">Sin herramientas</span></div>
+                <div className="flex-1 flex flex-col items-center justify-center text-center opacity-70"><span className="text-[#8c7b61] text-sm italic font-medium">Bolsa vacía...</span></div>
               ) : (
                 toolsList.map((t) => (
-                  <button key={t.id} type="button" onClick={() => navigate('/herramientas', { state: { toolId: t.id } })} className="bg-zinc-950 border border-zinc-800 rounded-xl p-3 flex justify-between items-center text-left group hover:border-emerald-500/50 transition-colors cursor-pointer">
+                  <button key={t.id} type="button" onClick={() => navigate('/herramientas', { state: { toolId: t.id } })} className="bg-[#f4ecd8] border border-[#c4a46c] rounded-xl p-3 flex justify-between items-center text-left group hover:border-[#8b2e2e] shadow-sm transition-all hover:-translate-y-0.5 cursor-pointer shrink-0">
                     <div className="flex flex-col overflow-hidden">
-                      <span className="font-bold text-emerald-400 text-sm truncate">{t.name}</span>
-                      <span className="text-[10px] text-zinc-500 uppercase tracking-widest font-semibold">{t.discipline}</span>
+                      <span className="font-bold text-[#2c241b] text-sm truncate">{t.name}</span>
+                      <span className="text-[10px] text-[#8b2e2e] uppercase tracking-widest font-bold mt-0.5">{t.discipline}</span>
                     </div>
-                    <div className="bg-zinc-900 border border-zinc-700 px-2 py-1 rounded text-center shrink-0 ml-2">
-                      <span className="text-[10px] text-zinc-500 block leading-none">Nvl</span>
-                      <span className="text-sm font-bold text-zinc-200 leading-none">{t.mastery}</span>
+                    <div className="bg-[#fdfaf3] border border-[#c4a46c] px-2 py-1 rounded text-center shrink-0 ml-2">
+                      <span className="text-[10px] text-[#8c7b61] block leading-none font-bold uppercase">Nvl</span>
+                      <span className="text-sm font-black text-[#8b2e2e] leading-none">{t.mastery}</span>
                     </div>
                   </button>
                 ))
@@ -262,19 +271,77 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="bg-zinc-900 border-2 border-zinc-700 rounded-2xl p-5 shadow-lg flex flex-col h-[250px]">
-            <div className="flex justify-between items-center mb-4 border-b border-zinc-800 pb-2 shrink-0">
-              <h3 className="text-xl font-bold font-serif text-zinc-100">Hitos</h3>
-              <button onClick={() => navigate('/hitos')} className="text-2xl font-light text-zinc-400 hover:text-indigo-400 transition-colors px-2">+</button>
+          {/* Tarjeta Hitos (Diseño Carta Horizontal)[cite: 7] */}
+          <div className="bg-[#fdfaf3] border-2 border-[#c4a46c] rounded-2xl p-5 shadow-[0_4px_0_#c4a46c] flex flex-col h-[350px]">
+            <div className="flex justify-between items-center mb-4 border-b-2 border-[#d0c2a8] pb-2 shrink-0">
+              <h3 className="text-xl font-bold font-epic text-[#2c241b] tracking-wider uppercase">Hitos & Proezas</h3>
+              <button onClick={() => navigate('/hitos')} className="text-2xl font-light text-[#8c7b61] hover:text-[#8b2e2e] transition-colors px-2">+</button>
             </div>
-            <div className="flex-1 overflow-y-auto flex flex-col gap-2 pr-1 custom-scrollbar">
+            <div className="flex-1 overflow-y-auto flex flex-col gap-4 pr-1 custom-scrollbar">
               {milestonesList.length === 0 ? (
-                <div className="flex-1 flex flex-col items-center justify-center text-center opacity-50"><span className="text-zinc-400 text-sm italic">Sin hitos</span></div>
+                <div className="flex-1 flex flex-col items-center justify-center text-center opacity-70"><span className="text-[#8c7b61] text-sm italic font-medium">Sin aventuras registradas...</span></div>
               ) : (
                 milestonesList.map((milestone) => (
-                  <button key={milestone.id} type="button" onClick={() => navigate('/hitos', { state: { milestoneId: milestone.id } })} className="bg-zinc-950 border border-zinc-800 rounded-xl p-3 flex flex-col gap-1 text-left hover:border-indigo-500/50 transition-colors cursor-pointer">
-                    <span className="font-bold text-indigo-400 text-sm truncate">{milestone.name}</span>
-                    <span className="text-xs text-zinc-400 line-clamp-2">{milestone.description}</span>
+                  <button 
+                    key={milestone.id} 
+                    type="button" 
+                    onClick={() => navigate('/hitos', { state: { milestoneId: milestone.id } })} 
+                    className="bg-[#f4ecd8] border border-[#c4a46c] rounded-xl flex flex-row w-full text-left hover:border-[#8b2e2e] shadow-sm transition-all hover:-translate-y-0.5 cursor-pointer overflow-hidden group shrink-0"
+                  >
+                    {/* Imagen Izquierda[cite: 7] */}
+                    <div className="w-24 shrink-0 border-r border-[#c4a46c] bg-[#e5d9c5]">
+                      {milestone.image ? (
+                        <img src={milestone.image} alt={milestone.name} className="w-full h-full object-cover" />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center text-[#8c7b61] opacity-50 bg-[#e5d9c5]">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Contenido Derecha[cite: 7] */}
+                    <div className="flex flex-col flex-1 p-3 justify-center min-w-0">
+                      
+                      {/* Estado y XP[cite: 7] */}
+                      <div className="flex justify-between items-center mb-1">
+                        <div className="flex items-center gap-1">
+                          {milestone.isActive ? (
+                            <span className="text-[9px] font-bold uppercase tracking-widest text-[#8b2e2e] flex items-center gap-1">
+                              <span className="w-1.5 h-1.5 rounded-full bg-[#8b2e2e] animate-pulse"></span>
+                              Activa
+                            </span>
+                          ) : (
+                            <span className="text-[9px] font-bold uppercase tracking-widest text-emerald-700 flex items-center gap-1">
+                              <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                              Completada
+                            </span>
+                          )}
+                          {!milestone.isActive && <span className="text-[#8b2e2e] text-[9px] font-bold tracking-widest ml-1">+400 XP</span>}
+                        </div>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#8c7b61" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+                      </div>
+
+                      {/* Título[cite: 7] */}
+                      <h4 className="text-base font-black font-epic text-[#2c241b] uppercase truncate leading-tight mb-0.5">
+                        {milestone.name}
+                      </h4>
+
+                      {/* Subtítulo[cite: 7] */}
+                      <p className="text-[9px] text-[#8c7b61] font-medium truncate mb-2">
+                        {milestone.guild} {milestone.duration ? `· ${milestone.duration}` : ''} {milestone.tools?.length > 0 ? `· ${milestone.tools[0]}` : ''}
+                      </p>
+
+                      {/* Bottom (Badge & Link)[cite: 7] */}
+                      <div className="flex justify-between items-center mt-auto">
+                        <span className="px-1.5 py-0.5 bg-[#fdfaf3] border border-[#c4a46c] rounded text-[8px] font-black text-[#2c241b] uppercase tracking-widest">
+                          Legendario
+                        </span>
+                        <span className="text-[9px] font-bold text-[#8b2e2e] flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                          Ver / Editar <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                        </span>
+                      </div>
+
+                    </div>
                   </button>
                 ))
               )}
@@ -286,49 +353,60 @@ export default function Home() {
 
       {/* MODAL DE HABILIDADES */}
       {showSkillModal && (
-        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-zinc-200 border-2 border-zinc-400 rounded-xl p-6 w-full max-w-sm flex flex-col gap-6 shadow-2xl relative">
-            <h2 className="text-2xl font-bold text-zinc-900 font-serif text-center">Habilidad</h2>
-            <div className="flex flex-col gap-4">
-              <div className="space-y-1">
-                <label className="text-sm font-bold text-zinc-800">Nombre de la habilidad</label>
+        <div className="fixed inset-0 bg-[#2c241b]/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-[#fdfaf3] border-4 border-[#c4a46c] rounded-2xl p-6 w-full max-w-sm flex flex-col gap-6 shadow-2xl relative">
+            
+            <h2 className="text-2xl font-black text-[#2c241b] font-epic tracking-wider text-center border-b-2 border-[#8b2e2e] pb-2 uppercase">
+              Nueva Habilidad
+            </h2>
+            
+            <div className="flex flex-col gap-5">
+              <div className="space-y-1.5">
+                <label className="text-sm font-bold text-[#4a3f35] ml-1">Nombre del Rasgo</label>
                 <input 
                   type="text" value={skillDraft.name} onChange={(e) => setSkillDraft({...skillDraft, name: e.target.value})}
-                  className="w-full bg-white border border-zinc-400 rounded-lg px-4 py-3 text-zinc-900 focus:outline-none focus:border-indigo-500 shadow-sm"
-                  placeholder="ej. Carisma, Inteligencia..."
+                  className="w-full bg-[#f4ecd8] border-2 border-[#c4a46c] rounded-xl px-4 py-3 text-[#2c241b] placeholder:text-[#a39481] focus:outline-none focus:border-[#8b2e2e] shadow-sm"
+                  placeholder="Ej. Carisma, Sigilo..."
                 />
               </div>
-              <div className="space-y-3 p-4 border border-zinc-300 rounded-lg bg-zinc-100/80 shadow-inner">
-                <label className="text-xs font-bold text-zinc-500 uppercase tracking-widest">Modificadores</label>
+
+              <div className="space-y-3 p-4 border-2 border-[#c4a46c] rounded-xl bg-[#f4ecd8]/50 shadow-inner">
+                <label className="text-xs font-bold text-[#8b2e2e] uppercase tracking-widest">Modificadores</label>
                 {skillDraft.attributes.length > 0 && (
                   <div className="flex flex-col gap-2 mb-4">
                     {skillDraft.attributes.map((attr, idx) => (
-                      <div key={idx} className="flex justify-between items-center bg-white border border-zinc-200 px-3 py-2 rounded-md shadow-sm">
-                        <span className="font-semibold text-zinc-700 text-sm">{attr.name}</span>
+                      <div key={idx} className="flex justify-between items-center bg-[#fdfaf3] border border-[#c4a46c] px-3 py-2 rounded-lg shadow-sm">
+                        <span className="font-bold text-[#2c241b] text-sm">{attr.name}</span>
                         <div className="flex items-center gap-3">
-                          <span className="font-bold text-indigo-600">+{attr.value}</span>
-                          <button onClick={() => handleRemoveAttribute(idx)} className="text-red-400 hover:text-red-600 font-bold px-1">✕</button>
+                          <span className="font-black text-[#8b2e2e]">+{attr.value}</span>
+                          <button onClick={() => handleRemoveAttribute(idx)} className="text-[#8c7b61] hover:text-[#8b2e2e] font-bold px-1 transition-colors">✕</button>
                         </div>
                       </div>
                     ))}
                   </div>
                 )}
+                
                 <div className="flex items-stretch gap-2">
                   <input 
                     type="text" placeholder="Aptitud" value={newAttr.name} onChange={(e) => setNewAttr({...newAttr, name: e.target.value})}
-                    className="flex-1 bg-white border border-zinc-400 rounded-md px-3 py-2 text-sm text-zinc-900 focus:outline-none shadow-sm"
+                    className="flex-1 bg-[#fdfaf3] border border-[#c4a46c] rounded-lg px-3 py-2 text-sm text-[#2c241b] placeholder:text-[#a39481] focus:outline-none focus:border-[#8b2e2e] shadow-sm"
                   />
                   <input 
                     type="number" placeholder="+ Val" value={newAttr.value} onChange={(e) => setNewAttr({...newAttr, value: e.target.value})}
-                    className="w-20 bg-white border border-zinc-400 rounded-md px-3 py-2 text-sm text-zinc-900 focus:outline-none shadow-sm"
+                    className="w-20 bg-[#fdfaf3] border border-[#c4a46c] rounded-lg px-3 py-2 text-sm text-[#2c241b] placeholder:text-[#a39481] focus:outline-none focus:border-[#8b2e2e] shadow-sm text-center"
                   />
-                  <button onClick={handleAddAttribute} className="bg-zinc-900 text-white font-bold px-4 rounded-md hover:bg-zinc-700 shadow-sm">(+)</button>
+                  <button onClick={handleAddAttribute} className="bg-[#8b2e2e] text-[#fdfaf3] font-black px-4 rounded-lg hover:bg-[#6b2323] border-2 border-[#6b2323] shadow-[0_3px_0_#4a1616] active:translate-y-[3px] active:shadow-none transition-all">(+)</button>
                 </div>
               </div>
             </div>
+
             <div className="flex justify-between gap-4 mt-2">
-              <button onClick={handleCloseModal} className="flex-1 py-3 bg-zinc-200 border-2 border-zinc-800 text-zinc-900 font-bold rounded-xl hover:bg-zinc-300 shadow-[3px_3px_0px_rgba(39,39,42,1)] active:shadow-none active:translate-y-[3px] active:translate-x-[3px]">Cancelar</button>
-              <button onClick={handleSaveSkill} className="flex-1 py-3 bg-zinc-200 border-2 border-zinc-800 text-zinc-900 font-bold rounded-xl hover:bg-zinc-300 shadow-[3px_3px_0px_rgba(39,39,42,1)] active:shadow-none active:translate-y-[3px] active:translate-x-[3px]">Guardar</button>
+              <button onClick={handleCloseModal} className="flex-1 py-3.5 bg-[#fdfaf3] border-2 border-[#c4a46c] text-[#2c241b] font-bold rounded-xl hover:bg-[#f4ecd8] shadow-[0_4px_0_#c4a46c] active:shadow-none active:translate-y-[4px] transition-all">
+                Cancelar
+              </button>
+              <button onClick={handleSaveSkill} className="flex-1 py-3.5 bg-[#6b2323] border-2 border-[#4a1616] text-[#f4ecd8] font-bold rounded-xl hover:bg-[#521919] shadow-[0_4px_0_#4a1616] active:shadow-none active:translate-y-[4px] transition-all tracking-wide">
+                Guardar
+              </button>
             </div>
           </div>
         </div>
