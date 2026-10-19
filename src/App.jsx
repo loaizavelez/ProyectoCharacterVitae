@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { HashRouter, Routes, Route } from 'react-router-dom';
 import Landing from './Pages/LandingPage/Landing';
 import Login from './Pages/Login/Login';
 import Home from './Pages/Home/Home';  
@@ -13,7 +13,7 @@ import AdventurerSheet from './Pages/AdventurerSheet/AdventurerSheet';
 
 function App() {
   return (
-    <BrowserRouter>
+    <HashRouter>
 
     <FlipTablet />
 
@@ -27,13 +27,13 @@ function App() {
         <Route path="/recuperacion" element={<Recovery />} />
         <Route path="/sheet" element={<AdventurerSheet />} />
         <Route path="/canvas" element={
-          <div className="min-h-screen bg-zinc-950 flex items-center justify-center p-4">
+          <div className="min-h-screen bg-[#f4ecd8] flex items-center justify-center p-4">
             <DrawingCanvas />
           </div>
         } />
         
       </Routes>
-    </BrowserRouter>
+    </HashRouter>
   );
 }
 
