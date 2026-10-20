@@ -42,16 +42,20 @@ export default function Landing() {
       {/* ==========================================
           ENCABEZADO (Navegación)
       =========================================== */}
-      <header className="flex justify-between items-center w-full px-6 py-5 md:px-12 border-b-2 border-[#d0c2a8] sticky top-0 bg-[#f4ecd8]/95 backdrop-blur-md z-50 shadow-sm">
-        <div className="flex items-center gap-3">
-          <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#d4af37" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="drop-shadow-sm"><polygon points="12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5 12 2"/><line x1="12" y1="22" x2="12" y2="15.5"/><line x1="22" y1="8.5" x2="12" y2="15.5"/><line x1="2" y1="8.5" x2="12" y2="15.5"/><line x1="12" y1="2" x2="12" y2="15.5"/><line x1="22" y1="15.5" x2="12" y2="15.5"/><line x1="2" y1="15.5" x2="12" y2="15.5"/></svg>
-          <h1 className="text-xl md:text-2xl font-black font-epic tracking-widest text-[#2c241b] mt-1">
+      <header className="flex justify-between items-center w-full px-4 py-4 md:px-12 md:py-5 border-b-2 border-[#d0c2a8] sticky top-0 bg-[#f4ecd8]/95 backdrop-blur-md z-50 shadow-sm gap-2 md:gap-4">
+        
+        {/* Contenedor del título (sin truncate, ajustando tamaños) */}
+        <div className="flex items-center gap-2 md:gap-3">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#d4af37" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6 md:w-7 md:h-7 drop-shadow-sm shrink-0"><polygon points="12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5 12 2"/><line x1="12" y1="22" x2="12" y2="15.5"/><line x1="22" y1="8.5" x2="12" y2="15.5"/><line x1="2" y1="8.5" x2="12" y2="15.5"/><line x1="12" y1="2" x2="12" y2="15.5"/><line x1="22" y1="15.5" x2="12" y2="15.5"/><line x1="2" y1="15.5" x2="12" y2="15.5"/></svg>
+          <h1 className="text-sm sm:text-lg md:text-2xl font-black font-epic tracking-widest text-[#2c241b] mt-1 leading-none">
             CHARACTER VITAE
           </h1>
         </div>
+
+        {/* Botón (reduciendo el padding y texto en móviles) */}
         <button 
           onClick={() => navigate('/login')}
-          className="px-5 py-2 bg-[#fdfaf3] border-2 border-[#c4a46c] hover:bg-[#f4ecd8] text-[#2c241b] font-bold rounded-lg transition-all active:scale-95 shadow-[0_3px_0_#c4a46c] active:shadow-none active:translate-y-[3px] tracking-wide"
+          className="whitespace-nowrap shrink-0 px-3 py-2 md:px-5 md:py-2 bg-[#fdfaf3] border-2 border-[#c4a46c] hover:bg-[#f4ecd8] text-[#2c241b] font-bold rounded-lg transition-all active:scale-95 shadow-[0_3px_0_#c4a46c] active:shadow-none active:translate-y-[3px] tracking-wide text-xs sm:text-sm md:text-base"
         >
           Iniciar sesión
         </button>

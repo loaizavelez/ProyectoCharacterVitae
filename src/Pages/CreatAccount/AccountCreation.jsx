@@ -62,8 +62,9 @@ export default function AccountCreation() {
     const usuariosDB = JSON.parse(localStorage.getItem('usuariosDB')) || [];
     usuariosDB.push(nuevoUsuario);
     localStorage.setItem('usuariosDB', JSON.stringify(usuariosDB));
+    localStorage.setItem('usuarioActivo', nuevoUsuario.id);
 
-    navigate('/login');
+    navigate('/sheet');
   };
 
   // ========================================================

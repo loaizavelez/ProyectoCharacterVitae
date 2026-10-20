@@ -17,7 +17,8 @@ export default function Home() {
     name: 'Viajero Desconocido',
     location: 'Sin ubicación',
     educationLevel: 'Sin rango',
-    institution: 'Gremio independiente'
+    institution: 'Gremio independiente',
+    portrait: null
   });
 
   // ==========================================
@@ -174,24 +175,37 @@ export default function Home() {
       <div className="w-full max-w-4xl flex flex-col mt-8">
         
         {/* ==========================================
-            ENCABEZADO: Perfil Dinámico
+            ENCABEZADO: Perfil Dinámico con Retrato
         =========================================== */}
         <header className="flex justify-between items-start w-full mb-12">
           <div className="z-10 mt-2">
             <h1 className="text-4xl md:text-5xl font-black font-epic text-[#2c241b] tracking-wider mb-4 uppercase">
               {activeProfile.name}
             </h1>
-            <ul className="space-y-2 text-sm md:text-base text-[#4a3f35] font-bold capitalize">
+            <ul className="space-y-2 text-sm md:text-base text-[#4a3f35] font-bold capitalize mb-6">
               <li className="flex items-center gap-2"><span className="w-2 h-2 rotate-45 bg-[#c4a46c] border border-[#8c7b61]"></span>{activeProfile.location}</li>
               <li className="flex items-center gap-2"><span className="w-2 h-2 rotate-45 bg-[#c4a46c] border border-[#8c7b61]"></span>Rango: {activeProfile.educationLevel}</li>
               <li className="flex items-center gap-2"><span className="w-2 h-2 rotate-45 bg-[#c4a46c] border border-[#8c7b61]"></span>{activeProfile.institution}</li>
             </ul>
+            
+            {/* BOTÓN PARA NAVEGAR A LA FICHA */}
+            <button 
+              onClick={() => navigate('/sheet')}
+              className="px-5 py-2.5 bg-[#fdfaf3] border-2 border-[#c4a46c] hover:border-[#8b2e2e] hover:text-[#8b2e2e] text-[#2c241b] font-bold rounded-xl transition-all active:scale-95 shadow-[0_3px_0_#c4a46c] active:shadow-none active:translate-y-[3px] flex items-center gap-2 text-xs uppercase tracking-widest"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+              Forjar Ficha
+            </button>
           </div>
           
-          <div className={`flex items-center rounded-2xl transition-all duration-500 ease-in-out overflow-hidden ${starExpanded ? 'bg-[#fdfaf3]/90 border-2 border-[#c4a46c] p-5 shadow-[0_4px_0_#c4a46c] backdrop-blur-sm' : 'p-2 border border-transparent'}`}>
-            <button onClick={() => setStarExpanded(!starExpanded)} className={`relative flex items-center justify-center shrink-0 transition-all duration-500 ease-out z-20 ${starExpanded ? 'w-24 h-24 md:w-28 md:h-28 text-[#d4af37] drop-shadow-sm mr-4' : 'w-10 h-10 md:w-12 md:h-12 text-[#8c7b61] hover:text-[#c4a46c]'}`}>
-              <svg xmlns="http://www.w3.org/2000/svg" className="w-full h-full transition-colors duration-500" viewBox="0 0 24 24" fill={starExpanded ? "currentColor" : "none"} stroke="currentColor" strokeWidth={starExpanded ? "1" : "2"} strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
-              <span className={`absolute font-black uppercase tracking-tight transition-all duration-500 pointer-events-none text-center leading-none ${starExpanded ? 'opacity-100 text-[#2c241b] text-[10px] md:text-xs mt-3 scale-100' : 'opacity-0 text-[0px] scale-50'}`}>{activeProfile.educationLevel}</span>
+          <div className={`flex items-center rounded-full md:rounded-2xl transition-all duration-500 ease-in-out overflow-hidden ${starExpanded ? 'bg-[#fdfaf3]/90 border-2 border-[#c4a46c] p-4 shadow-[0_4px_0_#c4a46c] backdrop-blur-sm' : 'p-2 border border-transparent'}`}>
+            <button onClick={() => setStarExpanded(!starExpanded)} className={`relative flex items-center justify-center shrink-0 transition-all duration-500 ease-out z-20 rounded-full ${starExpanded ? 'w-24 h-24 md:w-28 md:h-28 text-[#d4af37] drop-shadow-sm mr-4' : 'w-16 h-16 md:w-20 md:h-20 text-[#8c7b61] hover:text-[#c4a46c]'}`}>
+              {activeProfile.portrait ? (
+                <img src={activeProfile.portrait} alt="Retrato del aventurero" className="w-full h-full object-cover rounded-full border-4 border-[#c4a46c] shadow-md" />
+              ) : (
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-full h-full transition-colors duration-500" viewBox="0 0 24 24" fill={starExpanded ? "currentColor" : "none"} stroke="currentColor" strokeWidth={starExpanded ? "1" : "2"} strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              )}
+              <span className={`absolute font-black uppercase tracking-tight transition-all duration-500 pointer-events-none text-center leading-none bg-[#f4ecd8]/90 backdrop-blur-sm px-2 py-0.5 rounded border border-[#c4a46c] ${starExpanded ? 'opacity-100 text-[#2c241b] text-[10px] md:text-xs mt-3 scale-100' : 'opacity-0 text-[0px] scale-50'}`}>{activeProfile.educationLevel}</span>
             </button>
             <div className={`flex flex-col justify-center transition-all duration-500 ease-in-out ${starExpanded ? 'max-w-[400px] opacity-100 translate-x-0' : 'max-w-0 opacity-0 translate-x-8'}`}>
               <div className="whitespace-nowrap min-w-max pr-4">
@@ -242,7 +256,6 @@ export default function Home() {
         {/* ==========================================
             INVENTARIO: Herramientas e Hitos
         =========================================== */}
-        {/* Cambiamos la altura de grid estricta para que las tarjetas horizontales respiren mejor */}
         <section className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
           
           {/* Tarjeta Herramientas */}
@@ -271,7 +284,7 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Tarjeta Hitos (Diseño Carta Horizontal)[cite: 7] */}
+          {/* Tarjeta Hitos */}
           <div className="bg-[#fdfaf3] border-2 border-[#c4a46c] rounded-2xl p-5 shadow-[0_4px_0_#c4a46c] flex flex-col h-[350px]">
             <div className="flex justify-between items-center mb-4 border-b-2 border-[#d0c2a8] pb-2 shrink-0">
               <h3 className="text-xl font-bold font-epic text-[#2c241b] tracking-wider uppercase">Hitos & Proezas</h3>
@@ -288,7 +301,6 @@ export default function Home() {
                     onClick={() => navigate('/hitos', { state: { milestoneId: milestone.id } })} 
                     className="bg-[#f4ecd8] border border-[#c4a46c] rounded-xl flex flex-row w-full text-left hover:border-[#8b2e2e] shadow-sm transition-all hover:-translate-y-0.5 cursor-pointer overflow-hidden group shrink-0"
                   >
-                    {/* Imagen Izquierda[cite: 7] */}
                     <div className="w-24 shrink-0 border-r border-[#c4a46c] bg-[#e5d9c5]">
                       {milestone.image ? (
                         <img src={milestone.image} alt={milestone.name} className="w-full h-full object-cover" />
@@ -298,11 +310,7 @@ export default function Home() {
                         </div>
                       )}
                     </div>
-
-                    {/* Contenido Derecha[cite: 7] */}
                     <div className="flex flex-col flex-1 p-3 justify-center min-w-0">
-                      
-                      {/* Estado y XP[cite: 7] */}
                       <div className="flex justify-between items-center mb-1">
                         <div className="flex items-center gap-1">
                           {milestone.isActive ? (
@@ -320,18 +328,12 @@ export default function Home() {
                         </div>
                         <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#8c7b61" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
                       </div>
-
-                      {/* Título[cite: 7] */}
                       <h4 className="text-base font-black font-epic text-[#2c241b] uppercase truncate leading-tight mb-0.5">
                         {milestone.name}
                       </h4>
-
-                      {/* Subtítulo[cite: 7] */}
                       <p className="text-[9px] text-[#8c7b61] font-medium truncate mb-2">
                         {milestone.guild} {milestone.duration ? `· ${milestone.duration}` : ''} {milestone.tools?.length > 0 ? `· ${milestone.tools[0]}` : ''}
                       </p>
-
-                      {/* Bottom (Badge & Link)[cite: 7] */}
                       <div className="flex justify-between items-center mt-auto">
                         <span className="px-1.5 py-0.5 bg-[#fdfaf3] border border-[#c4a46c] rounded text-[8px] font-black text-[#2c241b] uppercase tracking-widest">
                           Legendario
@@ -340,7 +342,6 @@ export default function Home() {
                           Ver / Editar <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
                         </span>
                       </div>
-
                     </div>
                   </button>
                 ))
@@ -355,11 +356,9 @@ export default function Home() {
       {showSkillModal && (
         <div className="fixed inset-0 bg-[#2c241b]/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
           <div className="bg-[#fdfaf3] border-4 border-[#c4a46c] rounded-2xl p-6 w-full max-w-sm flex flex-col gap-6 shadow-2xl relative">
-            
             <h2 className="text-2xl font-black text-[#2c241b] font-epic tracking-wider text-center border-b-2 border-[#8b2e2e] pb-2 uppercase">
               Nueva Habilidad
             </h2>
-            
             <div className="flex flex-col gap-5">
               <div className="space-y-1.5">
                 <label className="text-sm font-bold text-[#4a3f35] ml-1">Nombre del Rasgo</label>
@@ -369,7 +368,6 @@ export default function Home() {
                   placeholder="Ej. Carisma, Sigilo..."
                 />
               </div>
-
               <div className="space-y-3 p-4 border-2 border-[#c4a46c] rounded-xl bg-[#f4ecd8]/50 shadow-inner">
                 <label className="text-xs font-bold text-[#8b2e2e] uppercase tracking-widest">Modificadores</label>
                 {skillDraft.attributes.length > 0 && (
@@ -385,7 +383,6 @@ export default function Home() {
                     ))}
                   </div>
                 )}
-                
                 <div className="flex items-stretch gap-2">
                   <input 
                     type="text" placeholder="Aptitud" value={newAttr.name} onChange={(e) => setNewAttr({...newAttr, name: e.target.value})}
@@ -399,7 +396,6 @@ export default function Home() {
                 </div>
               </div>
             </div>
-
             <div className="flex justify-between gap-4 mt-2">
               <button onClick={handleCloseModal} className="flex-1 py-3.5 bg-[#fdfaf3] border-2 border-[#c4a46c] text-[#2c241b] font-bold rounded-xl hover:bg-[#f4ecd8] shadow-[0_4px_0_#c4a46c] active:shadow-none active:translate-y-[4px] transition-all">
                 Cancelar
