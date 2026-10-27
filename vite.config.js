@@ -5,6 +5,8 @@ import tailwindcss from '@tailwindcss/vite'
 
 // https://vite.dev/config/
 export default defineConfig({
+
+  base: '/ProyectoCharacterVitae/',
   plugins: [
     react(),
     babel({ presets: [reactCompilerPreset()] }),
