@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import wizardStudyImage from '../../assets/Wizard in Study.jpg';
 
 export default function Login() {
   const navigate = useNavigate();
@@ -19,7 +20,7 @@ export default function Login() {
     <main className="min-h-screen bg-[#f4ecd8] text-[#2c241b] font-serif p-4 md:p-8 flex justify-center items-center relative">
       
       {/* Contenedor Principal (Tarjeta de Login) */}
-      <div className="w-full max-w-5xl bg-[#fdfaf3] border-4 border-[#c4a46c] rounded-3xl shadow-2xl flex flex-col md:flex-row overflow-hidden relative min-h-[500px]">
+      <div className="w-full max-w-5xl bg-[#fdfaf3] border-4 border-[#c4a46c] rounded-3xl shadow-2xl flex flex-col md:flex-row overflow-hidden relative min-h-125">
         
         {/* Botón de regreso absoluto en la esquina superior izquierda */}
         <button 
@@ -35,19 +36,11 @@ export default function Login() {
             * Oculta en móviles (hidden), visible en tablet/PC (md:flex)
         =========================================== */}
         <div className="hidden md:flex w-full md:w-1/2 bg-[#e5d9c5] border-r-4 border-[#c4a46c] relative items-center justify-center overflow-hidden">
-          {/* Marca de agua / Placeholder de imagen */}
-          <div className="absolute inset-0 opacity-20" style={{ backgroundImage: "url('data:image/svg+xml,%3Csvg width=\\'20\\' height=\\'20\\' viewBox=\\'0 0 20 20\\' xmlns=\\'http://www.w3.org/2000/svg\\'%3E%3Cg fill=\\'%238c7b61\\' fill-opacity=\\'0.4\\' fill-rule=\\'evenodd\\'%3E%3Ccircle cx=\\'3\\' cy=\\'3\\' r=\\'3\\'/%3E%3Ccircle cx=\\'13\\' cy=\\'13\\' r=\\'3\\'/%3E%3C/g%3E%3C/svg%3E')"}}></div>
-          
-          <div className="flex flex-col items-center text-[#8c7b61] opacity-60 z-10">
-            <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" className="mb-2"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-            <span className="text-sm font-bold uppercase tracking-widest">Ilustración Épica</span>
-          </div>
-          
-          {/* Líneas cruzadas simulando el placeholder del wireframe */}
-          <svg className="absolute inset-0 w-full h-full opacity-10 pointer-events-none" preserveAspectRatio="none">
-            <line x1="0" y1="0" x2="100%" y2="100%" stroke="#8c7b61" strokeWidth="2" />
-            <line x1="100%" y1="0" x2="0" y2="100%" stroke="#8c7b61" strokeWidth="2" />
-          </svg>
+          <img
+            src={wizardStudyImage}
+            alt="Mago estudiando en su biblioteca"
+            className="absolute inset-0 w-full h-full object-cover"
+          />
         </div>
 
         {/* ==========================================
@@ -106,7 +99,7 @@ export default function Login() {
             {/* Botón principal de login */}
             <button 
               type="submit" 
-              className="w-full mt-4 py-4 bg-[#6b2323] hover:bg-[#521919] text-[#f4ecd8] border-2 border-[#4a1616] font-bold text-lg rounded-xl transition-all active:scale-95 shadow-[0_4px_0_#4a1616] active:shadow-none active:translate-y-[4px] uppercase tracking-widest"
+              className="w-full mt-4 py-4 bg-[#6b2323] hover:bg-[#521919] text-[#f4ecd8] border-2 border-[#4a1616] font-bold text-lg rounded-xl transition-all active:scale-95 shadow-[0_4px_0_#4a1616] active:shadow-none active:translate-y-1 uppercase tracking-widest"
             >
               iniciar sesión
             </button>

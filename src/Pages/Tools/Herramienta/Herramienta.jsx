@@ -52,6 +52,14 @@ export default function Herramienta() {
     reportTitle: '',
     reportDescription: ''
   });
+  const masteryLevel = Number(tool.mastery);
+  const masteryTitle = masteryLevel < 30
+    ? 'Aprendiz'
+    : masteryLevel < 70
+      ? 'Artesano'
+      : masteryLevel === 100
+        ? 'Gran Maestro'
+        : 'Maestro';
 
   // 2. Manejador de estado en tiempo real
   const handleChange = (e) => {
@@ -172,7 +180,7 @@ export default function Herramienta() {
                 <div className="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-[#8c7b61] m-4"></div>
                 <div className="absolute top-0 right-0 w-8 h-8 border-t-2 border-r-2 border-[#8c7b61] m-4"></div>
                 
-                <h3 className="text-2xl font-black font-epic text-[#2c241b] uppercase break-all min-h-[4rem] flex items-center justify-center mt-4 tracking-wide">
+                <h3 className="text-2xl font-black font-epic text-[#2c241b] uppercase break-all min-h-16 flex items-center justify-center mt-4 tracking-wide">
                   {tool.name || 'Artefacto Desconocido'}
                 </h3>
 
@@ -188,7 +196,7 @@ export default function Herramienta() {
                   <div className="flex justify-between text-xs text-[#4a3f35] font-bold mb-2 uppercase">
                     <span>Nvl. {tool.mastery}</span>
                     <span className="text-[#8b2e2e] font-black tracking-wide">
-                      {tool.mastery < 30 ? 'Aprendiz' : tool.mastery < 70 ? 'Artesano' : 'Gran Maestro'}
+                      {masteryTitle}
                     </span>
                   </div>
                   <div className="w-full bg-[#d0c2a8] h-2.5 rounded-full overflow-hidden border border-[#c4a46c]">
@@ -248,9 +256,10 @@ export default function Herramienta() {
                   onChange={handleChange}
                   className="w-full h-2 bg-[#c4a46c] rounded-lg appearance-none cursor-pointer accent-[#8b2e2e]"
                 />
-                <div className="flex justify-between text-xs text-[#8c7b61] font-bold px-1 uppercase tracking-widest">
-                  <span>Aprendiz</span>
-                  <span>Gran maestro</span>
+                <div className="grid grid-cols-3 text-xs text-[#8c7b61] font-bold px-1 uppercase tracking-widest">
+                  <span className="text-left">Aprendiz</span>
+                  <span className="text-center">Artesano</span>
+                  <span className="text-right">Maestro</span>
                 </div>
               </div>
 
@@ -273,7 +282,7 @@ export default function Herramienta() {
                   value={tool.reportDescription}
                   onChange={handleChange}
                   placeholder="Describe cómo usas este artefacto..."
-                  className="w-full min-h-[120px] bg-[#f4ecd8] border-2 border-[#c4a46c] rounded-xl px-4 py-4 focus:border-[#8b2e2e] focus:outline-none text-[#2c241b] placeholder:text-[#a39481] transition-colors resize-y shadow-inner leading-relaxed"
+                  className="w-full min-h-30 bg-[#f4ecd8] border-2 border-[#c4a46c] rounded-xl px-4 py-4 focus:border-[#8b2e2e] focus:outline-none text-[#2c241b] placeholder:text-[#a39481] transition-colors resize-y shadow-inner leading-relaxed"
                 ></textarea>
               </div>
 
@@ -287,7 +296,7 @@ export default function Herramienta() {
             <button
               data-tour="tool-save"
               type="submit" 
-              className="w-full md:w-2/3 lg:w-1/2 py-4 md:py-5 bg-[#6b2323] hover:bg-[#521919] text-[#f4ecd8] border-2 border-[#4a1616] font-bold font-epic tracking-widest text-xl md:text-2xl rounded-2xl transition-all active:scale-95 shadow-[0_6px_0_#4a1616] active:shadow-none active:translate-y-[6px] uppercase"
+              className="w-full md:w-2/3 lg:w-1/2 py-4 md:py-5 bg-[#6b2323] hover:bg-[#521919] text-[#f4ecd8] border-2 border-[#4a1616] font-bold font-epic tracking-widest text-xl md:text-2xl rounded-2xl transition-all active:scale-95 shadow-[0_6px_0_#4a1616] active:shadow-none active:translate-y-1.5 uppercase"
             >
               {editingToolId ? 'Grabar Cambios' : 'Forjar Artefacto'}
             </button>
