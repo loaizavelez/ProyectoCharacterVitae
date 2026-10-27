@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import gsap from 'gsap';
+import GuidedTutorial from '../../../Components/GuidedTutorial/GuidedTutorial';
 
 export default function Herramienta() {
   const navigate = useNavigate();
@@ -13,6 +14,32 @@ export default function Herramienta() {
   const activeUser = usuariosDB.find((user) => user.id === activeUserId);
   const savedTools = activeUser?.inventory?.tools || [];
   const toolToEdit = savedTools.find((savedTool) => savedTool.id === editingToolId);
+  const tutorialSteps = [
+    {
+      element: '[data-tour="tool-preview"]',
+      popover: { title: 'Vista previa', description: 'La tarjeta muestra cómo cambia el artefacto con los datos que ingresas.' },
+    },
+    {
+      element: '[data-tour="tool-name"]',
+      popover: { title: 'Nombre del artefacto', description: 'Escribe la herramienta, tecnología o recurso que quieres registrar.' },
+    },
+    {
+      element: '[data-tour="tool-discipline"]',
+      popover: { title: 'Disciplina', description: 'Clasifica el artefacto según el área en la que lo utilizas.' },
+    },
+    {
+      element: '[data-tour="tool-mastery"]',
+      popover: { title: 'Nivel de maestría', description: 'Ajusta el control para indicar tu nivel actual de dominio.' },
+    },
+    {
+      element: '[data-tour="tool-report"]',
+      popover: { title: 'Anotaciones', description: 'Añade un título y notas sobre cómo utilizas este artefacto.' },
+    },
+    {
+      element: '[data-tour="tool-save"]',
+      popover: { title: 'Guardar artefacto', description: 'Registra el artefacto para que aparezca en tu inventario.' },
+    },
+  ];
 
   // 1. Estado unificado
   const [tool, setTool] = useState(() => toolToEdit ? {
@@ -121,6 +148,11 @@ export default function Herramienta() {
             </h1>
             <span className="text-[#8b2e2e] text-xs md:text-sm font-bold tracking-widest uppercase mt-1">Añadir al inventario</span>
           </div>
+          <GuidedTutorial
+            storageKey={`tutorial:tool:${activeUserId || 'guest'}`}
+            autoStart={!editingToolId}
+            steps={tutorialSteps}
+          />
         </header>
 
         <form onSubmit={handleForge}>
@@ -129,7 +161,7 @@ export default function Herramienta() {
             {/* ==========================================
                 VISTA PREVIA (Solo Tablet/Desktop)
             =========================================== */}
-            <section className="hidden md:flex flex-col gap-4">
+            <section data-tour="tool-preview" className="hidden md:flex flex-col gap-4">
               <h2 className="text-xl font-bold text-[#8b2e2e] font-epic uppercase tracking-widest">Inspeccionar</h2>
               
               <div 
@@ -174,7 +206,7 @@ export default function Herramienta() {
             =========================================== */}
             <section className="flex flex-col gap-6">
               
-              <div className="space-y-1.5">
+              <div data-tour="tool-name" className="space-y-1.5">
                 <label className="text-sm font-bold text-[#4a3f35] ml-1 uppercase tracking-wider">Nombre del artefacto</label>
                 <input 
                   type="text" 
@@ -187,7 +219,7 @@ export default function Herramienta() {
                 />
               </div>
 
-              <div className="space-y-1.5">
+              <div data-tour="tool-discipline" className="space-y-1.5">
                 <label className="text-sm font-bold text-[#4a3f35] ml-1 uppercase tracking-wider">Disciplina</label>
                 <div className="relative">
                   <select 
@@ -205,7 +237,7 @@ export default function Herramienta() {
                 </div>
               </div>
 
-              <div className="space-y-3 mt-2 bg-[#f4ecd8] p-4 rounded-xl border border-[#c4a46c]">
+              <div data-tour="tool-mastery" className="space-y-3 mt-2 bg-[#f4ecd8] p-4 rounded-xl border border-[#c4a46c]">
                 <label className="text-sm font-bold text-[#8b2e2e] uppercase tracking-wider">Maestría</label>
                 <input 
                   type="range" 
@@ -222,7 +254,7 @@ export default function Herramienta() {
                 </div>
               </div>
 
-              <div className="mt-2 space-y-4">
+              <div data-tour="tool-report" className="mt-2 space-y-4">
                 <div className="flex items-center gap-2 mb-2">
                   <hr className="w-4 border-[#8b2e2e] border-t-2" />
                   <h3 className="text-xs font-bold text-[#8b2e2e] uppercase tracking-widest">Anotaciones</h3>
@@ -252,7 +284,8 @@ export default function Herramienta() {
               BOTÓN FINAL
           =========================================== */}
           <div className="flex justify-center mt-12 w-full pt-6 border-t-2 border-[#d0c2a8]">
-            <button 
+            <button
+              data-tour="tool-save"
               type="submit" 
               className="w-full md:w-2/3 lg:w-1/2 py-4 md:py-5 bg-[#6b2323] hover:bg-[#521919] text-[#f4ecd8] border-2 border-[#4a1616] font-bold font-epic tracking-widest text-xl md:text-2xl rounded-2xl transition-all active:scale-95 shadow-[0_6px_0_#4a1616] active:shadow-none active:translate-y-[6px] uppercase"
             >

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import GuidedTutorial from '../../../Components/GuidedTutorial/GuidedTutorial';
 
 export default function Hito() {
   const navigate = useNavigate();
@@ -14,6 +15,40 @@ export default function Hito() {
   const savedMilestones = activeUser?.inventory?.milestones || [];
   const milestoneToEdit = savedMilestones.find((savedMilestone) => savedMilestone.id === editingMilestoneId);
   const availableTools = activeUser?.inventory?.tools || [];
+  const tutorialSteps = [
+    {
+      element: '[data-tour="milestone-preview"]',
+      popover: { title: 'Vista previa', description: 'Aquí puedes revisar cómo se verá la tarjeta de tu hito mientras completas el formulario.' },
+    },
+    {
+      element: '[data-tour="milestone-image"]',
+      popover: { title: 'Ilustra tu hazaña', description: 'Puedes agregar una imagen para acompañar la historia del hito.' },
+    },
+    {
+      element: '[data-tour="milestone-name"]',
+      popover: { title: 'Nombre de la misión', description: 'Escribe un nombre breve que te ayude a reconocer esta meta o logro.' },
+    },
+    {
+      element: '[data-tour="milestone-guild"]',
+      popover: { title: 'Especialidad', description: 'Elige el área relacionada con este hito.' },
+    },
+    {
+      element: '[data-tour="milestone-duration"]',
+      popover: { title: 'Duración y estado', description: 'Indica el periodo y marca si la misión sigue en curso.' },
+    },
+    {
+      element: '[data-tour="milestone-description"]',
+      popover: { title: 'Crónica de la hazaña', description: 'Describe el objetivo, el proceso o lo que lograste.' },
+    },
+    {
+      element: '[data-tour="milestone-tools"]',
+      popover: { title: 'Artefactos utilizados', description: 'Selecciona las herramientas de tu inventario que usaste en este hito.' },
+    },
+    {
+      element: '[data-tour="milestone-save"]',
+      popover: { title: 'Guardar hito', description: 'Cuando termines, registra la hazaña para añadirla a tu inventario.' },
+    },
+  ];
 
   // 2. Estado unificado del hito
   const [milestone, setMilestone] = useState(() => milestoneToEdit ? {
@@ -120,6 +155,11 @@ export default function Hito() {
             </h1>
             <span className="text-[#8b2e2e] text-xs md:text-sm font-bold tracking-widest uppercase mt-1">Crónicas y Hazañas</span>
           </div>
+          <GuidedTutorial
+            storageKey={`tutorial:milestone:${activeUserId || 'guest'}`}
+            autoStart={!editingMilestoneId}
+            steps={tutorialSteps}
+          />
         </header>
 
         <form onSubmit={handleForge}>
@@ -128,7 +168,7 @@ export default function Hito() {
             {/* ==========================================
                 COLUMNA IZQUIERDA: Vista Previa
             =========================================== */}
-            <section className="hidden md:flex flex-col gap-4">
+            <section data-tour="milestone-preview" className="hidden md:flex flex-col gap-4">
               <h2 className="text-xl font-bold text-[#8b2e2e] font-epic uppercase tracking-widest">Vista Previa</h2>
               
               <article className="flex-1 border-2 border-[#c4a46c] bg-[#fdfaf3] rounded-xl flex flex-col overflow-hidden shadow-lg h-full">
@@ -207,7 +247,7 @@ export default function Hito() {
             <section className="flex flex-col gap-6">
               
               {/* Imagen (Opcional) */}
-              <div className="space-y-1.5">
+              <div data-tour="milestone-image" className="space-y-1.5">
                 <label className="text-sm font-bold text-[#4a3f35] ml-1 uppercase tracking-wider">Ilustración de la hazaña</label>
                 <label className="flex items-center justify-center w-full bg-[#f4ecd8] border-2 border-dashed border-[#8c7b61] hover:border-[#8b2e2e] rounded-xl px-4 py-6 cursor-pointer text-[#8c7b61] hover:text-[#8b2e2e] transition-colors shadow-inner group">
                   <div className="flex flex-col items-center gap-2">
@@ -230,7 +270,7 @@ export default function Hito() {
               </div>
 
               {/* Nombre de la misión */}
-              <div className="space-y-1.5">
+              <div data-tour="milestone-name" className="space-y-1.5">
                 <label htmlFor="name" className="text-sm font-bold text-[#4a3f35] ml-1 uppercase tracking-wider">Nombre de la misión</label>
                 <input
                   id="name"
@@ -245,7 +285,7 @@ export default function Hito() {
               </div>
 
               {/* Gremio */}
-              <div className="space-y-1.5">
+              <div data-tour="milestone-guild" className="space-y-1.5">
                 <label htmlFor="guild" className="text-sm font-bold text-[#4a3f35] ml-1 uppercase tracking-wider">Gremio / Especialidad</label>
                 <div className="relative">
                   <select
@@ -264,7 +304,7 @@ export default function Hito() {
               </div>
 
               {/* Duración y Misión Activa */}
-              <div className="flex items-center gap-4">
+              <div data-tour="milestone-duration" className="flex items-center gap-4">
                 <div className="space-y-1.5 flex-1">
                   <label htmlFor="duration" className="text-sm font-bold text-[#4a3f35] ml-1 uppercase tracking-wider">Duración</label>
                   <input
@@ -293,7 +333,7 @@ export default function Hito() {
               </div>
 
               {/* Crónicas / Descripción */}
-              <div className="space-y-1.5 mt-2">
+              <div data-tour="milestone-description" className="space-y-1.5 mt-2">
                 <div className="flex items-center gap-2 mb-2">
                   <hr className="w-4 border-[#8b2e2e] border-t-2" />
                   <h3 className="text-xs font-bold text-[#8b2e2e] uppercase tracking-widest">Crónicas de la Hazaña</h3>
@@ -310,7 +350,7 @@ export default function Hito() {
               </div>
 
               {/* Herramientas utilizadas */}
-              <div className="space-y-3 mt-2">
+              <div data-tour="milestone-tools" className="space-y-3 mt-2">
                 <div className="flex items-center gap-2 mb-2">
                   <hr className="w-4 border-[#8b2e2e] border-t-2" />
                   <h3 className="text-xs font-bold text-[#8b2e2e] uppercase tracking-widest">Artefactos Equipados</h3>
@@ -349,6 +389,7 @@ export default function Hito() {
           =========================================== */}
           <div className="flex justify-center mt-12 w-full pt-6 border-t-2 border-[#d0c2a8]">
             <button
+              data-tour="milestone-save"
               type="submit"
               className="w-full md:w-2/3 lg:w-1/2 py-4 md:py-5 bg-[#6b2323] hover:bg-[#521919] text-[#f4ecd8] border-2 border-[#4a1616] font-bold font-epic tracking-widest text-xl md:text-2xl rounded-2xl transition-all active:scale-95 shadow-[0_6px_0_#4a1616] active:shadow-none active:translate-y-[6px] uppercase"
             >

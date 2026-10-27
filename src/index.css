@@ -11,3 +11,37 @@ html, body {
   margin: 0;
   padding: 0;
 }
+
+.driver-popover.tutorial-popover {
+  max-width: min(340px, calc(100vw - 32px));
+  border: 2px solid #c4a46c;
+  border-radius: 14px;
+  background: #fdfaf3;
+  color: #2c241b;
+  font-family: inherit;
+}
+
+.driver-popover.tutorial-popover .driver-popover-title {
+  color: #8b2e2e;
+  font-family: inherit;
+  font-weight: 800;
+}
+
+.driver-popover.tutorial-popover .driver-popover-description {
+  color: #4a3f35;
+  font-family: inherit;
+}
+
+.driver-popover.tutorial-popover button {
+  border-radius: 7px;
+  font-family: inherit;
+  font-weight: 700;
+}
+
+.driver-popover.tutorial-popover .driver-popover-next-btn,
+.driver-popover.tutorial-popover .driver-popover-done-btn {
+  border-color: #6b2323;
+  background-color: #6b2323;
+  color: #f4ecd8;
+  text-shadow: none;
+}

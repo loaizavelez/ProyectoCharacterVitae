@@ -54,7 +54,7 @@ export default function FlipTablet() {
         <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#c4a46c" strokeWidth="1.5" className="absolute bottom-2 right-2 opacity-60"><rect width="8" height="8" x="14" y="14" rx="2"/></svg>
 
         <p className="text-xl text-[#4a3f35] font-bold leading-relaxed mb-12">
-          Para disfrutar esta experiencia<br />voltea tu artefacto
+          Para disfrutar esta experiencia<br />voltea tu Dispositivo
         </p>
 
         {/* Icono animado del dispositivo */}
