@@ -5,6 +5,7 @@ import wizardStudyImage from '../../assets/Wizard in Study.jpg';
 export default function Login() {
   const navigate = useNavigate();
   const [credentials, setCredentials] = useState({ email: '', password: '' });
+  const [error, setError] = useState('');
 
   const handleChange = (e) => {
     setCredentials({ ...credentials, [e.target.name]: e.target.value });
@@ -12,7 +13,19 @@ export default function Login() {
 
   const handleLogin = (e) => {
     e.preventDefault();
-    // Lógica de autenticación aquí
+    const usuariosDB = JSON.parse(localStorage.getItem('usuariosDB') || '[]');
+    const identifier = credentials.email.trim().toLowerCase();
+    const currentUser = usuariosDB.find((user) => (
+      user.profile.email?.trim().toLowerCase() === identifier
+      || user.profile.name?.trim().toLowerCase() === identifier
+    ));
+
+    if (!currentUser || currentUser.profile.password !== credentials.password) {
+      setError('Correo, nombre o contraseña incorrectos.');
+      return;
+    }
+
+    localStorage.setItem('usuarioActivo', currentUser.id);
     navigate('/home');
   };
 
@@ -53,6 +66,11 @@ export default function Login() {
           </h1>
 
           <form onSubmit={handleLogin} className="w-full max-w-sm flex flex-col gap-5">
+            {error && (
+              <p role="alert" className="text-[#8b2e2e] font-bold text-center text-sm bg-[#8b2e2e]/10 p-2 rounded border border-[#8b2e2e]/30">
+                {error}
+              </p>
+            )}
             
             {/* Inputs de credenciales */}
             <div className="flex flex-col gap-4">
