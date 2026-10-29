@@ -96,6 +96,14 @@ export default function Hito() {
     image: null 
   });
   const [dateParts, setDateParts] = useState(() => getDateParts(milestoneToEdit?.duration));
+  const [monthDraft, setMonthDraft] = useState(() => {
+    const month = getDateParts(milestoneToEdit?.duration).month;
+    return month ? MONTHS[month - 1] : '';
+  });
+  const [yearDraft, setYearDraft] = useState(() => {
+    const year = getDateParts(milestoneToEdit?.duration).year;
+    return year ? String(year) : '';
+  });
 
   const updateDatePart = (part, value) => {
     const nextParts = { ...dateParts, [part]: value };
@@ -105,7 +113,79 @@ export default function Hito() {
     }
 
     setDateParts(nextParts);
+    if (part === 'month') {
+      setMonthDraft(MONTHS[value - 1]);
+    } else if (part === 'year') {
+      setYearDraft(String(value));
+    }
     setMilestone((prev) => ({ ...prev, duration: formatDate(nextParts) }));
+  };
+
+  const handleMonthChange = (value) => {
+    setMonthDraft(value);
+    const monthIndex = MONTHS.findIndex((month) => month === value.trim().toLocaleLowerCase('es'));
+    if (monthIndex >= 0) {
+      updateDatePart('month', monthIndex + 1);
+    }
+  };
+
+  const handleMonthBlur = () => {
+    const typedMonth = monthDraft.trim().toLocaleLowerCase('es');
+    const monthIndex = MONTHS.findIndex((month) => month.startsWith(typedMonth) && typedMonth.length > 0);
+    if (monthIndex >= 0) {
+      updateDatePart('month', monthIndex + 1);
+    } else {
+      setMonthDraft(dateParts.month ? MONTHS[dateParts.month - 1] : '');
+    }
+  };
+
+  const handleYearBlur = () => {
+    const year = Number(yearDraft);
+    if (yearDraft.length === 4 && year >= 1900 && year <= new Date().getFullYear() + 10) {
+      updateDatePart('year', year);
+    } else {
+      setYearDraft(dateParts.year ? String(dateParts.year) : '');
+    }
+  };
+
+  const handleNumericDateChange = (part, value) => {
+    if (part === 'year') {
+      if (value !== '' && !/^\d{1,4}$/.test(value)) {
+        return;
+      }
+
+      setYearDraft(value);
+      if (value === '') {
+        const nextParts = { ...dateParts, year: null };
+        setDateParts(nextParts);
+        setMilestone((prev) => ({ ...prev, duration: formatDate(nextParts) }));
+      } else if (value.length === 4) {
+        const year = Number(value);
+        if (year >= 1900 && year <= new Date().getFullYear() + 10) {
+          updateDatePart('year', year);
+        }
+      }
+      return;
+    }
+
+    if (value === '') {
+      const nextParts = { ...dateParts, [part]: null };
+      setDateParts(nextParts);
+      setMilestone((prev) => ({ ...prev, duration: formatDate(nextParts) }));
+      return;
+    }
+
+    if (!/^\d+$/.test(value)) {
+      return;
+    }
+
+    const numericValue = Number(value);
+    const maxValue = getDaysInMonth(dateParts.month, dateParts.year);
+    if (numericValue < 1 || numericValue > maxValue) {
+      return;
+    }
+
+    updateDatePart(part, numericValue);
   };
 
   const moveDatePart = (part, direction) => {
@@ -365,7 +445,7 @@ export default function Hito() {
               </div>
 
               {/* Fecha del hito y misión activa */}
-              <div data-tour="milestone-duration" className="space-y-3">
+              <div data-tour="milestone-duration" className="space-y-2">
                 <div className="flex flex-wrap items-center justify-between gap-3">
                   <span className="text-sm font-bold text-[#4a3f35] ml-1 uppercase tracking-wider">Fecha del hito</span>
                   <div className="flex items-center gap-2">
@@ -388,27 +468,39 @@ export default function Hito() {
                     { part: 'month', label: 'Mes', value: dateParts.month ? MONTHS[dateParts.month - 1] : null },
                     { part: 'year', label: 'Año', value: dateParts.year },
                   ].map(({ part, label, value }) => (
-                    <div key={part} className="flex flex-col items-center rounded-xl border-2 border-[#c4a46c] bg-[#f4ecd8] px-2 py-2 shadow-inner">
-                      <span className="mb-1 text-[10px] font-bold uppercase tracking-widest text-[#8c7b61]">{label}</span>
+                    <div key={part} className="min-w-0">
+                      <span className="mb-1 block pl-1 text-[10px] font-bold uppercase tracking-widest text-[#8c7b61]">{label}</span>
+                      <div className="flex h-10 items-center justify-between rounded-lg border-2 border-[#c4a46c] bg-[#f4ecd8] shadow-inner">
                       <button
                         type="button"
                         onClick={() => moveDatePart(part, -1)}
                         aria-label={`${label} anterior`}
-                        className="rounded px-3 py-1 text-[#8c7b61] transition-colors hover:bg-[#e9dcc0] hover:text-[#8b2e2e]"
+                        className="flex h-full shrink-0 items-center rounded-l-md px-2 text-[#8c7b61] transition-colors hover:bg-[#e9dcc0] hover:text-[#8b2e2e]"
                       >
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m18 15-6-6-6 6"/></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
                       </button>
-                      <span className="flex min-h-8 items-center text-center text-sm font-black capitalize text-[#2c241b] sm:text-base">
-                        {value || '—'}
-                      </span>
+                      <input
+                        type="text"
+                        inputMode={part === 'month' ? 'text' : 'numeric'}
+                        aria-label={label}
+                        value={part === 'month' ? monthDraft : part === 'year' ? yearDraft : value ?? ''}
+                        placeholder="—"
+                        maxLength={part === 'month' ? 10 : 4}
+                        onChange={(event) => part === 'month'
+                          ? handleMonthChange(event.target.value)
+                          : handleNumericDateChange(part, event.target.value)}
+                        onBlur={part === 'month' ? handleMonthBlur : part === 'year' ? handleYearBlur : undefined}
+                        className="min-w-0 w-full bg-transparent px-0.5 text-center text-xs font-black capitalize text-[#2c241b] placeholder:text-[#8c7b61] focus:outline-none sm:text-sm"
+                      />
                       <button
                         type="button"
                         onClick={() => moveDatePart(part, 1)}
                         aria-label={`${label} siguiente`}
-                        className="rounded px-3 py-1 text-[#8c7b61] transition-colors hover:bg-[#e9dcc0] hover:text-[#8b2e2e]"
+                        className="flex h-full shrink-0 items-center rounded-r-md px-2 text-[#8c7b61] transition-colors hover:bg-[#e9dcc0] hover:text-[#8b2e2e]"
                       >
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6"/></svg>
                       </button>
+                      </div>
                     </div>
                   ))}
                 </div>
