@@ -1,6 +1,37 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import GuidedTutorial from '../../../Components/GuidedTutorial/GuidedTutorial';
+
+const MONTHS = [
+  'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio',
+  'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre',
+];
+
+const getDateParts = (duration) => {
+  const isoMatch = /^(\d{4})-(\d{2})-(\d{2})$/.exec(duration || '');
+  const spanishMatch = /^(\d{1,2}) de ([a-záéíóú]+) de (\d{4})$/i.exec(duration || '');
+
+  if (isoMatch) {
+    return { day: Number(isoMatch[3]), month: Number(isoMatch[2]), year: Number(isoMatch[1]) };
+  }
+
+  if (spanishMatch) {
+    const month = MONTHS.indexOf(spanishMatch[2].toLocaleLowerCase('es'));
+    if (month >= 0) {
+      return { day: Number(spanishMatch[1]), month: month + 1, year: Number(spanishMatch[3]) };
+    }
+  }
+
+  return { day: null, month: null, year: null };
+};
+
+const getDaysInMonth = (month, year) => (
+  month && year ? new Date(year, month, 0).getDate() : 31
+);
+
+const formatDate = ({ day, month, year }) => (
+  day && month && year ? `${day} de ${MONTHS[month - 1]} de ${year}` : ''
+);
 
 export default function Hito() {
   const navigate = useNavigate();
@@ -34,7 +65,7 @@ export default function Hito() {
     },
     {
       element: '[data-tour="milestone-duration"]',
-      popover: { title: 'Duración y estado', description: 'Indica el periodo y marca si la misión sigue en curso.' },
+      popover: { title: 'Fecha y estado', description: 'Elige el día, mes y año del hito, y marca si la misión sigue en curso.' },
     },
     {
       element: '[data-tour="milestone-description"]',
@@ -64,6 +95,116 @@ export default function Hito() {
     tools: [], 
     image: null 
   });
+  const [dateParts, setDateParts] = useState(() => getDateParts(milestoneToEdit?.duration));
+  const [monthDraft, setMonthDraft] = useState(() => {
+    const month = getDateParts(milestoneToEdit?.duration).month;
+    return month ? MONTHS[month - 1] : '';
+  });
+  const [yearDraft, setYearDraft] = useState(() => {
+    const year = getDateParts(milestoneToEdit?.duration).year;
+    return year ? String(year) : '';
+  });
+
+  const updateDatePart = (part, value) => {
+    const nextParts = { ...dateParts, [part]: value };
+    const maxDay = getDaysInMonth(nextParts.month, nextParts.year);
+    if (nextParts.day && nextParts.day > maxDay) {
+      nextParts.day = maxDay;
+    }
+
+    setDateParts(nextParts);
+    if (part === 'month') {
+      setMonthDraft(MONTHS[value - 1]);
+    } else if (part === 'year') {
+      setYearDraft(String(value));
+    }
+    setMilestone((prev) => ({ ...prev, duration: formatDate(nextParts) }));
+  };
+
+  const handleMonthChange = (value) => {
+    setMonthDraft(value);
+    const monthIndex = MONTHS.findIndex((month) => month === value.trim().toLocaleLowerCase('es'));
+    if (monthIndex >= 0) {
+      updateDatePart('month', monthIndex + 1);
+    }
+  };
+
+  const handleMonthBlur = () => {
+    const typedMonth = monthDraft.trim().toLocaleLowerCase('es');
+    const monthIndex = MONTHS.findIndex((month) => month.startsWith(typedMonth) && typedMonth.length > 0);
+    if (monthIndex >= 0) {
+      updateDatePart('month', monthIndex + 1);
+    } else {
+      setMonthDraft(dateParts.month ? MONTHS[dateParts.month - 1] : '');
+    }
+  };
+
+  const handleYearBlur = () => {
+    const year = Number(yearDraft);
+    if (yearDraft.length === 4 && year >= 1900 && year <= new Date().getFullYear() + 10) {
+      updateDatePart('year', year);
+    } else {
+      setYearDraft(dateParts.year ? String(dateParts.year) : '');
+    }
+  };
+
+  const handleNumericDateChange = (part, value) => {
+    if (part === 'year') {
+      if (value !== '' && !/^\d{1,4}$/.test(value)) {
+        return;
+      }
+
+      setYearDraft(value);
+      if (value === '') {
+        const nextParts = { ...dateParts, year: null };
+        setDateParts(nextParts);
+        setMilestone((prev) => ({ ...prev, duration: formatDate(nextParts) }));
+      } else if (value.length === 4) {
+        const year = Number(value);
+        if (year >= 1900 && year <= new Date().getFullYear() + 10) {
+          updateDatePart('year', year);
+        }
+      }
+      return;
+    }
+
+    if (value === '') {
+      const nextParts = { ...dateParts, [part]: null };
+      setDateParts(nextParts);
+      setMilestone((prev) => ({ ...prev, duration: formatDate(nextParts) }));
+      return;
+    }
+
+    if (!/^\d+$/.test(value)) {
+      return;
+    }
+
+    const numericValue = Number(value);
+    const maxValue = getDaysInMonth(dateParts.month, dateParts.year);
+    if (numericValue < 1 || numericValue > maxValue) {
+      return;
+    }
+
+    updateDatePart(part, numericValue);
+  };
+
+  const moveDatePart = (part, direction) => {
+    const values = part === 'day'
+      ? Array.from({ length: getDaysInMonth(dateParts.month, dateParts.year) }, (_, index) => index + 1)
+      : part === 'month'
+        ? Array.from({ length: 12 }, (_, index) => index + 1)
+        : Array.from({ length: new Date().getFullYear() + 10 - 1900 + 1 }, (_, index) => 1900 + index);
+    const currentIndex = values.indexOf(dateParts[part]);
+    let nextIndex = currentIndex < 0 ? 0 : currentIndex + direction;
+
+    if (part === 'year') {
+      nextIndex = Math.max(0, Math.min(values.length - 1, nextIndex));
+    } else {
+      nextIndex = (nextIndex + values.length) % values.length;
+    }
+
+    updateDatePart(part, values[nextIndex]);
+  };
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -303,32 +444,65 @@ export default function Hito() {
                 </div>
               </div>
 
-              {/* Duración y Misión Activa */}
-              <div data-tour="milestone-duration" className="flex items-center gap-4">
-                <div className="space-y-1.5 flex-1">
-                  <label htmlFor="duration" className="text-sm font-bold text-[#4a3f35] ml-1 uppercase tracking-wider">Duración</label>
-                  <input
-                    id="duration"
-                    type="text"
-                    name="duration"
-                    value={milestone.duration}
-                    onChange={handleChange}
-                    placeholder="Ej. Sep 1-30, 2026..."
-                    className="w-full bg-[#f4ecd8] border-2 border-[#c4a46c] rounded-xl px-4 py-3.5 focus:border-[#8b2e2e] focus:outline-none text-[#2c241b] placeholder:text-[#a39481] transition-colors shadow-inner font-bold"
-                  />
+              {/* Fecha del hito y misión activa */}
+              <div data-tour="milestone-duration" className="space-y-2">
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  <span className="text-sm font-bold text-[#4a3f35] ml-1 uppercase tracking-wider">Fecha del hito</span>
+                  <div className="flex items-center gap-2">
+                    <input
+                      id="isActive"
+                      type="checkbox"
+                      name="isActive"
+                      checked={milestone.isActive}
+                      onChange={handleChange}
+                      className="w-6 h-6 rounded-md border-2 border-[#c4a46c] bg-[#f4ecd8] accent-[#8b2e2e] cursor-pointer"
+                    />
+                    <label htmlFor="isActive" className="text-sm font-bold text-[#8b2e2e] uppercase tracking-wider cursor-pointer">
+                      Misión en curso
+                    </label>
+                  </div>
                 </div>
-                <div className="flex items-center gap-2 mt-6">
-                  <input
-                    id="isActive"
-                    type="checkbox"
-                    name="isActive"
-                    checked={milestone.isActive}
-                    onChange={handleChange}
-                    className="w-6 h-6 rounded-md border-2 border-[#c4a46c] bg-[#f4ecd8] accent-[#8b2e2e] cursor-pointer"
-                  />
-                  <label htmlFor="isActive" className="text-sm font-bold text-[#8b2e2e] uppercase tracking-wider cursor-pointer">
-                    Misión en curso
-                  </label>
+                <div className="grid grid-cols-3 gap-2 sm:gap-3" aria-label="Fecha del hito">
+                  {[
+                    { part: 'day', label: 'Día', value: dateParts.day },
+                    { part: 'month', label: 'Mes', value: dateParts.month ? MONTHS[dateParts.month - 1] : null },
+                    { part: 'year', label: 'Año', value: dateParts.year },
+                  ].map(({ part, label, value }) => (
+                    <div key={part} className="min-w-0">
+                      <span className="mb-1 block pl-1 text-[10px] font-bold uppercase tracking-widest text-[#8c7b61]">{label}</span>
+                      <div className="flex h-10 items-center justify-between rounded-lg border-2 border-[#c4a46c] bg-[#f4ecd8] shadow-inner">
+                      <button
+                        type="button"
+                        onClick={() => moveDatePart(part, -1)}
+                        aria-label={`${label} anterior`}
+                        className="flex h-full shrink-0 items-center rounded-l-md px-2 text-[#8c7b61] transition-colors hover:bg-[#e9dcc0] hover:text-[#8b2e2e]"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+                      </button>
+                      <input
+                        type="text"
+                        inputMode={part === 'month' ? 'text' : 'numeric'}
+                        aria-label={label}
+                        value={part === 'month' ? monthDraft : part === 'year' ? yearDraft : value ?? ''}
+                        placeholder="—"
+                        maxLength={part === 'month' ? 10 : 4}
+                        onChange={(event) => part === 'month'
+                          ? handleMonthChange(event.target.value)
+                          : handleNumericDateChange(part, event.target.value)}
+                        onBlur={part === 'month' ? handleMonthBlur : part === 'year' ? handleYearBlur : undefined}
+                        className="min-w-0 w-full bg-transparent px-0.5 text-center text-xs font-black capitalize text-[#2c241b] placeholder:text-[#8c7b61] focus:outline-none sm:text-sm"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => moveDatePart(part, 1)}
+                        aria-label={`${label} siguiente`}
+                        className="flex h-full shrink-0 items-center rounded-r-md px-2 text-[#8c7b61] transition-colors hover:bg-[#e9dcc0] hover:text-[#8b2e2e]"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+                      </button>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
 
