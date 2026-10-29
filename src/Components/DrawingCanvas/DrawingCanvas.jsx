@@ -48,22 +48,14 @@ export default function DrawingCanvas() {
     const scaleX = canvas.width / rect.width;
     const scaleY = canvas.height / rect.height;
 
-    let clientX = e.clientX;
-    let clientY = e.clientY;
-
-    if (e.touches && e.touches.length > 0) {
-      clientX = e.touches[0].clientX;
-      clientY = e.touches[0].clientY;
-    }
-
     return {
-      x: (clientX - rect.left) * scaleX,
-      y: (clientY - rect.top) * scaleY
+      x: (e.clientX - rect.left) * scaleX,
+      y: (e.clientY - rect.top) * scaleY
     };
   };
 
   const startDrawing = (e) => {
-    e.preventDefault(); 
+    e.currentTarget.setPointerCapture(e.pointerId);
     const { x, y } = getCoordinates(e);
     const ctx = contextRef.current;
 
@@ -81,7 +73,6 @@ export default function DrawingCanvas() {
 
   const draw = (e) => {
     if (!isDrawingRef.current) return;
-    e.preventDefault();
     const { x, y } = getCoordinates(e);
     const ctx = contextRef.current;
 
@@ -278,13 +269,10 @@ export default function DrawingCanvas() {
       <div className="w-full relative overflow-hidden rounded-xl border-2 border-[#8c7b61] shadow-inner bg-[#f4ecd8] cursor-crosshair">
         <canvas
           ref={canvasRef}
-          onMouseDown={startDrawing}
-          onMouseUp={finishDrawing}
-          onMouseOut={finishDrawing}
-          onMouseMove={draw}
-          onTouchStart={startDrawing} 
-          onTouchEnd={finishDrawing}  
-          onTouchMove={draw}          
+          onPointerDown={startDrawing}
+          onPointerUp={finishDrawing}
+          onPointerCancel={finishDrawing}
+          onPointerMove={draw}
           className="w-full h-auto aspect-[5/3] touch-none"
         />
       </div>
