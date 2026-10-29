@@ -180,8 +180,10 @@ export default function Herramienta() {
                 <div className="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-[#8c7b61] m-4"></div>
                 <div className="absolute top-0 right-0 w-8 h-8 border-t-2 border-r-2 border-[#8c7b61] m-4"></div>
                 
-                <h3 className="text-2xl font-black font-epic text-[#2c241b] uppercase break-all min-h-16 flex items-center justify-center mt-4 tracking-wide">
-                  {tool.name || 'Artefacto Desconocido'}
+                <h3 className="w-full text-2xl font-black font-epic text-[#2c241b] uppercase min-h-24 flex items-center justify-center mt-4 tracking-wide">
+                  <span className="w-full line-clamp-3 break-normal">
+                    {tool.name || 'Artefacto Desconocido'}
+                  </span>
                 </h3>
 
                 <div className="text-7xl my-6 drop-shadow-md transition-all">

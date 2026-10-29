@@ -8,6 +8,7 @@ export default function AdventurerSheet() {
   // Estados para controlar la imagen y su origen
   const [portraitImg, setPortraitImg] = useState(location.state?.portrait || null);
   const [portraitSource, setPortraitSource] = useState(location.state?.portrait ? 'canvas' : null);
+  const [portraitPosition, setPortraitPosition] = useState({ x: 50, y: 50 });
 
   const [sheetData, setSheetData] = useState({
     name: '',
@@ -27,9 +28,17 @@ export default function AdventurerSheet() {
       reader.onloadend = () => {
         setPortraitImg(reader.result); 
         setPortraitSource('upload'); // Marcamos que viene del input de archivo
+        setPortraitPosition({ x: 50, y: 50 });
       };
       reader.readAsDataURL(file);
     }
+  };
+
+  const handlePortraitPositionChange = (axis, value) => {
+    setPortraitPosition((prev) => ({
+      ...prev,
+      [axis]: Number(value)
+    }));
   };
 
   // Función para eliminar la foto actual
@@ -152,7 +161,13 @@ export default function AdventurerSheet() {
                   <label className="relative overflow-hidden flex-1 aspect-[4/3] bg-[#f4ecd8] border-2 border-[#c4a46c] hover:border-[#8b2e2e] rounded-2xl flex flex-col items-center justify-center text-[#8c7b61] hover:text-[#8b2e2e] transition-colors shadow-sm group cursor-pointer p-4">
                     {portraitImg && portraitSource === 'upload' ? (
                       <>
-                        <img src={portraitImg} alt="Retrato subido" className="absolute inset-0 w-full h-full object-cover" />
+                        <img
+                          src={portraitImg}
+                          alt="Retrato subido"
+                          className="absolute inset-0 w-full h-full object-cover scale-125"
+                          style={{ objectPosition: `${portraitPosition.x}% ${portraitPosition.y}%` }}
+                        />
+                        <div className="absolute inset-0 ring-2 ring-[#fdfaf3]/80 ring-inset shadow-[inset_0_0_0_2px_rgba(253,250,243,0.8)]" />
                         <button 
                           onClick={handleRemoveImage}
                           className="absolute top-2 right-2 bg-[#8b2e2e] text-[#fdfaf3] rounded-full p-1.5 shadow-md hover:bg-[#6b2323] transition-colors z-10 opacity-0 group-hover:opacity-100"
@@ -188,7 +203,7 @@ export default function AdventurerSheet() {
                   >
                     {portraitImg && portraitSource === 'canvas' ? (
                       <>
-                        <img src={portraitImg} alt="Retrato dibujado" className="absolute inset-0 w-full h-full object-cover" />
+                        <img src={portraitImg} alt="Retrato dibujado" className="absolute inset-0 w-full h-full object-cover" style={{ objectPosition: `${portraitPosition.x}% ${portraitPosition.y}%` }} />
                         <button 
                           onClick={handleRemoveImage}
                           className="absolute top-2 right-2 bg-[#8b2e2e] text-[#fdfaf3] rounded-full p-1.5 shadow-md hover:bg-[#6b2323] transition-colors z-10 opacity-0 group-hover:opacity-100"
@@ -199,12 +214,47 @@ export default function AdventurerSheet() {
                       </>
                     ) : (
                       <div className="flex flex-col items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mb-2 opacity-80 group-hover:scale-110 transition-transform"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
-                        <span className="text-xs uppercase font-bold tracking-widest text-center px-2">Retrato</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mb-2 opacity-80 group-hover:scale-110 transition-transform">
+                          <path d="m16 5 3 3"/>
+                          <path d="M4 20h4l10.5-10.5a2.12 2.12 0 0 0-4-4L4 16v4z"/>
+                        </svg>
+                        <span className="text-xs uppercase font-bold tracking-widest text-center px-2">Crea tu retrato</span>
                       </div>
                     )}
                   </button>
                 </div>
+
+                {portraitImg && portraitSource === 'upload' && (
+                  <div className="mt-3 rounded-2xl border-2 border-[#c4a46c] bg-[#f4ecd8] p-3 shadow-inner">
+                    <div className="mb-2 text-[10px] md:text-[11px] font-bold uppercase tracking-[0.22em] text-[#4a3f35]">
+                      Ajustar máscara
+                    </div>
+                    <div className="space-y-3">
+                      <label className="block text-[10px] md:text-[11px] font-bold uppercase tracking-[0.18em] text-[#4a3f35]">
+                        Horizontal
+                        <input
+                          type="range"
+                          min="0"
+                          max="100"
+                          value={portraitPosition.x}
+                          onChange={(e) => handlePortraitPositionChange('x', e.target.value)}
+                          className="mt-1 w-full accent-[#8b2e2e]"
+                        />
+                      </label>
+                      <label className="block text-[10px] md:text-[11px] font-bold uppercase tracking-[0.18em] text-[#4a3f35]">
+                        Vertical
+                        <input
+                          type="range"
+                          min="0"
+                          max="100"
+                          value={portraitPosition.y}
+                          onChange={(e) => handlePortraitPositionChange('y', e.target.value)}
+                          className="mt-1 w-full accent-[#8b2e2e]"
+                        />
+                      </label>
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* TRASFONDO */}
