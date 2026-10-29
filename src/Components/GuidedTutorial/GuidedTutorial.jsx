@@ -37,7 +37,7 @@ export default function GuidedTutorial({ storageKey, autoStart, steps }) {
     <button
       type="button"
       onClick={startTutorial}
-      className="shrink-0 rounded-lg border border-[#c4a46c] px-3 py-2 text-xs font-bold uppercase tracking-wider text-[#8b2e2e] transition-colors hover:bg-[#f4ecd8] focus:outline-none focus:ring-2 focus:ring-[#8b2e2e]"
+      className="ml-auto shrink-0 whitespace-nowrap rounded-lg border border-[#c4a46c] px-3 py-2 text-xs font-bold uppercase tracking-wider text-[#8b2e2e] transition-colors hover:bg-[#f4ecd8] focus:outline-none focus:ring-2 focus:ring-[#8b2e2e]"
       aria-label="Ver tutorial de esta sección"
     >
       Ver tutorial

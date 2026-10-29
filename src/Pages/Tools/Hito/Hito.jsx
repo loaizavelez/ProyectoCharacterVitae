@@ -279,7 +279,7 @@ export default function Hito() {
         {/* ==========================================
             ENCABEZADO
         =========================================== */}
-        <header className="flex items-center gap-4 mb-8 md:mb-10 border-b-2 border-[#8b2e2e] pb-4">
+        <header className="flex flex-wrap items-center gap-4 mb-8 md:mb-10 border-b-2 border-[#8b2e2e] pb-4">
           <button
             type="button"
             onClick={() => navigate(-1)}
@@ -290,8 +290,8 @@ export default function Hito() {
               <path d="m12 19-7-7 7-7" /><path d="M19 12H5" />
             </svg>
           </button>
-          <div className="flex flex-col">
-            <h1 className="text-3xl md:text-5xl font-black font-epic text-[#2c241b] tracking-wider uppercase leading-none">
+          <div className="min-w-0 flex-1 flex flex-col">
+            <h1 className="text-2xl md:text-5xl font-black font-epic text-[#2c241b] tracking-wider uppercase leading-none">
               {editingMilestoneId ? 'Modificar Hito' : 'Registro de Hito'}
             </h1>
             <span className="text-[#8b2e2e] text-xs md:text-sm font-bold tracking-widest uppercase mt-1">Crónicas y Hazañas</span>
