@@ -229,7 +229,7 @@ export default function Home() {
           <h2 className="text-2xl font-bold font-epic text-[#2c241b] mb-6 w-full text-left md:text-center tracking-widest border-b-2 border-transparent md:border-[#8b2e2e] inline-block pb-2">
             RASGOS Y HABILIDADES
           </h2>
-          <div className="flex flex-row overflow-x-auto w-full gap-4 py-6 px-4 custom-scrollbar md:justify-center">
+          <div className="flex flex-wrap justify-center w-full gap-4 py-6 px-4">
             {skillsList.map(skill => (
               <div key={skill.id} className="w-36 md:w-40 shrink-0 aspect-[2/3] bg-[#fdfaf3] border-2 border-[#c4a46c] rounded-xl flex flex-col p-4 shadow-sm hover:border-[#8b2e2e] hover:-translate-y-1 transition-all">
                 <div className="flex justify-center mb-auto mt-2 text-[#8c7b61]">
