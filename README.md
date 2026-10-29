@@ -14,6 +14,7 @@ Entre sus funcionalidades principales se destacan:
 - Perfil editable con información personal y profesional
 - Visualización de proyectos y logros
 - Secciones tipo herramientas, milestones y fichas de personaje
+- Tutoriales guiados para crear herramientas e hitos, con pasos contextuales y progreso
 - Navegación entre páginas con React Router
 - Diseño responsive para distintos tamaños de pantalla
 - Animaciones suaves y experiencias visuales con GSAP
@@ -28,29 +29,29 @@ Entre sus funcionalidades principales se destacan:
 
 ### Dependencias principales
 
-- React y React DOM: base de la interfaz de usuario y renderizado de la aplicación.
-- Vite: herramienta de desarrollo y compilación rápida para frontend.
-- React Router DOM: enrutamiento entre páginas de la aplicación.
-- Tailwind CSS: framework de estilos para diseño moderno y rápido.
-- Firebase: servicios de backend, configuración y conexión con la plataforma Firebase.
-- GSAP y @gsap/react: animaciones avanzadas y control de timelines en la UI.
-- Phaser: creación de contenido interactivo y experiencias visuales tipo juego o canvas.
-- Driver.js: guías interactivas para onboarding y tutoriales en la aplicación.
-- react-responsive: detección de viewport y diseño responsivo.
+- `react` y `react-dom`: interfaz de usuario y renderizado de la aplicación.
+- `react-router-dom`: navegación entre páginas.
+- `firebase`: integración con servicios de backend de Firebase.
+- `tailwindcss` y `@tailwindcss/vite`: estilos utilitarios e integración de Tailwind CSS con Vite.
+- `gsap` y `@gsap/react`: animaciones y su integración con componentes React.
+- `phaser`: experiencias interactivas y contenido tipo juego o canvas.
+- `driver.js`: creación de guías paso a paso para elementos de la interfaz.
+- `lucide-react`: iconos para la interfaz.
+- `react-responsive`: detección de tamaños de pantalla para el diseño responsive.
 
 ### Dependencias de desarrollo
 
-- @vitejs/plugin-react: integración de React con Vite.
-- ESLint: análisis estático del código para mantener calidad.
-- @eslint/js: configuración base de ESLint.
-- eslint-plugin-react-hooks: reglas recomendadas para React Hooks.
-- eslint-plugin-react-refresh: soporte para recarga rápida durante el desarrollo.
-- gh-pages: despliegue del proyecto en GitHub Pages.
-- @types/react y @types/react-dom: tipado para TypeScript en el entorno React.
-- @babel/core y plugin-babel: compatibilidad con transformación y compilación del código.
-- babel-plugin-react-compiler: soporte para React Compiler.
+- `vite` y `@vitejs/plugin-react`: servidor de desarrollo, compilación e integración de React.
+- `@rolldown/plugin-babel`, `@babel/core` y `babel-plugin-react-compiler`: transformación de código e integración de React Compiler.
+- `eslint`, `@eslint/js`, `globals`, `eslint-plugin-react-hooks` y `eslint-plugin-react-refresh`: análisis estático y reglas para el proyecto.
+- `gh-pages`: publicación en GitHub Pages.
+- `@types/react` y `@types/react-dom`: tipos de React para herramientas de desarrollo.
 
+### Tutoriales guiados con Driver.js
 
+Las pantallas de herramientas e hitos incluyen un botón **Ver tutorial** que inicia una guía contextual. Cada paso resalta un elemento del formulario y muestra una explicación, incluyendo la vista previa, los campos que se deben completar y la acción para guardar.
+
+Las guías muestran el progreso y ofrecen controles para avanzar, retroceder y finalizar. Al iniciar una guía por primera vez, esta se reproduce automáticamente; su estado se guarda en `localStorage` por usuario y por sección. El botón permite volver a abrirla cuando se necesite. Los pasos cuyos elementos no están visibles se omiten, por lo que la guía se adapta a la interfaz disponible. Los estilos base de Driver.js se cargan desde `driver.js/dist/driver.css`.
 
 ## Objetivo
 
