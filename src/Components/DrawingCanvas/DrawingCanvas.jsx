@@ -1,14 +1,20 @@
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 export default function DrawingCanvas() {
   const navigate = useNavigate();
   const canvasRef = useRef(null);
   const contextRef = useRef(null);
+  const isDrawingRef = useRef(false);
+  const snapshotRef = useRef(null);
+  const undoStackRef = useRef([]);
+  const redoStackRef = useRef([]);
   
   const [isDrawing, setIsDrawing] = useState(false);
   const [color, setColor] = useState('#2c241b'); // Tinta oscura por defecto
   const [brushSize, setBrushSize] = useState(3);
+  const [canUndo, setCanUndo] = useState(false);
+  const [canRedo, setCanRedo] = useState(false);
   
   // Herramientas: 'pen' (pluma), 'eraser' (borrador), 'rect' (rectángulo), 'circle' (círculo)
   const [tool, setTool] = useState('pen'); 
@@ -16,7 +22,6 @@ export default function DrawingCanvas() {
   // Estados para calcular formas geométricas
   const [startX, setStartX] = useState(0);
   const [startY, setStartY] = useState(0);
-  const [snapshot, setSnapshot] = useState(null);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -62,19 +67,20 @@ export default function DrawingCanvas() {
     const { x, y } = getCoordinates(e);
     const ctx = contextRef.current;
 
+    isDrawingRef.current = true;
     setIsDrawing(true);
     setStartX(x);
     setStartY(y);
     
     // Guardamos una "foto" del lienzo actual antes de empezar a dibujar la nueva forma
-    setSnapshot(ctx.getImageData(0, 0, canvasRef.current.width, canvasRef.current.height));
+    snapshotRef.current = ctx.getImageData(0, 0, canvasRef.current.width, canvasRef.current.height);
 
     ctx.beginPath();
     ctx.moveTo(x, y);
   };
 
   const draw = (e) => {
-    if (!isDrawing) return;
+    if (!isDrawingRef.current) return;
     e.preventDefault();
     const { x, y } = getCoordinates(e);
     const ctx = contextRef.current;
@@ -88,11 +94,11 @@ export default function DrawingCanvas() {
       ctx.stroke();
     } else if (tool === 'rect') {
       // Restauramos la foto anterior para que el rectángulo no deje un "rastro" al arrastrar
-      ctx.putImageData(snapshot, 0, 0);
+      ctx.putImageData(snapshotRef.current, 0, 0);
       ctx.beginPath();
       ctx.strokeRect(startX, startY, x - startX, y - startY);
     } else if (tool === 'circle') {
-      ctx.putImageData(snapshot, 0, 0);
+      ctx.putImageData(snapshotRef.current, 0, 0);
       ctx.beginPath();
       const radius = Math.sqrt(Math.pow(x - startX, 2) + Math.pow(y - startY, 2));
       ctx.arc(startX, startY, radius, 0, 2 * Math.PI);
@@ -100,15 +106,81 @@ export default function DrawingCanvas() {
     }
   };
 
+  const saveUndoState = (imageData) => {
+    undoStackRef.current.push(imageData);
+    if (undoStackRef.current.length > 20) {
+      undoStackRef.current.shift();
+    }
+    redoStackRef.current = [];
+    setCanUndo(true);
+    setCanRedo(false);
+  };
+
   const finishDrawing = () => {
-    if (!isDrawing) return;
+    if (!isDrawingRef.current) return;
     contextRef.current.closePath();
+    saveUndoState(snapshotRef.current);
+    snapshotRef.current = null;
+    isDrawingRef.current = false;
     setIsDrawing(false);
   };
+
+  const undo = useCallback(() => {
+    if (!canUndo || isDrawingRef.current) return;
+    const previousState = undoStackRef.current.pop();
+    if (!previousState) return;
+
+    const canvas = canvasRef.current;
+    redoStackRef.current.push(contextRef.current.getImageData(0, 0, canvas.width, canvas.height));
+    contextRef.current.putImageData(previousState, 0, 0);
+    setCanUndo(undoStackRef.current.length > 0);
+    setCanRedo(true);
+  }, [canUndo]);
+
+  const redo = useCallback(() => {
+    if (!canRedo || isDrawingRef.current) return;
+    const nextState = redoStackRef.current.pop();
+    if (!nextState) return;
+
+    const canvas = canvasRef.current;
+    undoStackRef.current.push(contextRef.current.getImageData(0, 0, canvas.width, canvas.height));
+    contextRef.current.putImageData(nextState, 0, 0);
+    setCanUndo(true);
+    setCanRedo(redoStackRef.current.length > 0);
+  }, [canRedo]);
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (!(e.ctrlKey || e.metaKey)) return;
+
+      const target = e.target;
+      if (target instanceof HTMLElement && (
+        target.isContentEditable ||
+        ['INPUT', 'TEXTAREA', 'SELECT'].includes(target.tagName)
+      )) return;
+
+      if (e.key.toLowerCase() === 'z') {
+        e.preventDefault();
+        if (e.shiftKey) {
+          redo();
+        } else {
+          undo();
+        }
+      } else if (e.key.toLowerCase() === 'y') {
+        e.preventDefault();
+        redo();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [redo, undo]);
 
   const clearCanvas = () => {
     const canvas = canvasRef.current;
     const ctx = contextRef.current;
+    if (isDrawingRef.current) finishDrawing();
+    saveUndoState(ctx.getImageData(0, 0, canvas.width, canvas.height));
     ctx.fillStyle = "#f4ecd8";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
   };
@@ -142,7 +214,7 @@ export default function DrawingCanvas() {
       <div className="flex flex-col md:flex-row items-center justify-between w-full gap-4 bg-[#f4ecd8] border-2 border-[#c4a46c] p-4 rounded-xl shadow-inner">
         
         {/* Herramientas Principales */}
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <button onClick={() => setTool('pen')} className={`p-2 rounded-lg border-2 transition-all ${tool === 'pen' ? 'bg-[#c4a46c] border-[#8c7b61] text-[#fdfaf3]' : 'bg-[#fdfaf3] border-[#d0c2a8] text-[#8c7b61] hover:border-[#c4a46c]'}`} title="Pluma">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg>
           </button>
@@ -155,6 +227,27 @@ export default function DrawingCanvas() {
           </button>
           <button onClick={() => setTool('circle')} className={`p-2 rounded-lg border-2 transition-all ${tool === 'circle' ? 'bg-[#c4a46c] border-[#8c7b61] text-[#fdfaf3]' : 'bg-[#fdfaf3] border-[#d0c2a8] text-[#8c7b61] hover:border-[#c4a46c]'}`} title="Círculo">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/></svg>
+          </button>
+          <div className="w-px h-8 bg-[#c4a46c] mx-1"></div>
+          <button
+            type="button"
+            onClick={undo}
+            disabled={!canUndo || isDrawing}
+            className="p-2 rounded-lg border-2 border-[#d0c2a8] bg-[#fdfaf3] text-[#8c7b61] hover:border-[#c4a46c] disabled:opacity-40 disabled:cursor-not-allowed"
+            title="Deshacer (Ctrl+Z)"
+            aria-label="Deshacer"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 7v6h6"/><path d="M21 17a9 9 0 0 0-15-6.7L3 13"/></svg>
+          </button>
+          <button
+            type="button"
+            onClick={redo}
+            disabled={!canRedo || isDrawing}
+            className="p-2 rounded-lg border-2 border-[#d0c2a8] bg-[#fdfaf3] text-[#8c7b61] hover:border-[#c4a46c] disabled:opacity-40 disabled:cursor-not-allowed"
+            title="Rehacer (Ctrl+Shift+Z o Ctrl+Y)"
+            aria-label="Rehacer"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 7v6h-6"/><path d="M3 17a9 9 0 0 1 15-6.7L21 13"/></svg>
           </button>
         </div>
 
